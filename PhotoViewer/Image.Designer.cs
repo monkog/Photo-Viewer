@@ -1,6 +1,6 @@
 ﻿namespace PhotoViewer
 {
-    partial class Obraz
+    partial class Image
     {
         /// <summary>
         /// Required designer variable.

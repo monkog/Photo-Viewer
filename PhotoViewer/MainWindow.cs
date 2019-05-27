@@ -5,12 +5,12 @@ using System.Windows.Forms;
 
 namespace PhotoViewer
 {
-    public partial class przegladarkaForm : Form
+    public partial class MainWindow : Form
     {
         public List<help> pathList;
         public int currentPath = -1;
 
-        public przegladarkaForm()
+        public MainWindow()
         {
             InitializeComponent();
             MinimizeBox = false;
@@ -23,7 +23,7 @@ namespace PhotoViewer
 
         private void buttonWczytaj_MouseClick(object sender, MouseEventArgs e)
         {
-            Wczytywanie wczytaj = new Wczytywanie();
+            DirectoryPicker wczytaj = new DirectoryPicker();
             wczytaj.Owner = this;
             wczytaj.MinimizeBox = false;
             wczytaj.MaximizeBox = false;
@@ -119,7 +119,7 @@ namespace PhotoViewer
         {
             if (pictureBox.Visible == true)
             {
-                Obraz obraz = new Obraz();
+                Image obraz = new Image();
                 obraz.Owner = this;
                 obraz.ShowInTaskbar = false;
                 obraz.WindowState = FormWindowState.Maximized;

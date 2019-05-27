@@ -5,14 +5,14 @@ using System.Windows.Forms;
 
 namespace PhotoViewer
 {
-    public partial class FullscreenPic : Form
+    public partial class FullscreenPicture : Form
     {
         public int width;
         public int height;
         private bool mouseDown = false;
         private Point mousePos;
 
-        public FullscreenPic()
+        public FullscreenPicture()
         {
             InitializeComponent();
             pictureBoxO.MouseWheel += new MouseEventHandler(FullscreenPic_MouseWheel);
@@ -24,7 +24,7 @@ namespace PhotoViewer
 
         private void pictureBoxO_DoubleClick(object sender, EventArgs e)
         {
-            Obraz form = (Obraz)Application.OpenForms["Obraz"];
+            Image form = (Image)Application.OpenForms["Obraz"];
             form.Close();
             Close();
         }
@@ -33,7 +33,7 @@ namespace PhotoViewer
         {
             if (e.KeyChar == (char)Keys.Escape)
             {
-                Obraz form = (Obraz)Application.OpenForms["Obraz"];
+                Image form = (Image)Application.OpenForms["Obraz"];
                 form.Close();
                 Close();
             }
@@ -54,7 +54,7 @@ namespace PhotoViewer
         {
             if (e.KeyValue == (char)Keys.Escape)
             {
-                Obraz form = (Obraz)Application.OpenForms["Obraz"];
+                Image form = (Image)Application.OpenForms["Obraz"];
                 form.Close();
                 Close();
             }

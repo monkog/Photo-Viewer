@@ -1,6 +1,6 @@
 ﻿namespace PhotoViewer
 {
-    partial class FullscreenPic
+    partial class FullscreenPicture
     {
         /// <summary>
         /// Required designer variable.

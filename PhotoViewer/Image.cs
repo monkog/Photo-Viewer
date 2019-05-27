@@ -4,22 +4,22 @@ using System.Windows.Forms;
 
 namespace PhotoViewer
 {
-    public partial class Obraz : Form
+    public partial class Image : Form
     {
         public int width;
         public int height;
         public int x;
         public int y;
 
-        public Obraz()
+        public Image()
         {
             InitializeComponent();
         }
 
         public void draw()
         {
-            var form = this.Owner as przegladarkaForm;
-            FullscreenPic fp = new FullscreenPic();
+            var form = this.Owner as MainWindow;
+            FullscreenPicture fp = new FullscreenPicture();
             fp.Owner = this;
             fp.FormBorderStyle = FormBorderStyle.None;
             fp.MainMenuStrip = null;
@@ -42,7 +42,7 @@ namespace PhotoViewer
 
         private void Obraz_KeyPress(object sender, KeyPressEventArgs e)
         {
-            FullscreenPic form = (FullscreenPic)Application.OpenForms["FullscreenPic"];
+            FullscreenPicture form = (FullscreenPicture)Application.OpenForms["FullscreenPic"];
             form.Close();
             Close();
         }

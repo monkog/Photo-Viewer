@@ -1,6 +1,6 @@
 ﻿namespace PhotoViewer
 {
-    partial class przegladarkaForm
+    partial class MainWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(przegladarkaForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.treeView = new System.Windows.Forms.TreeView();
             this.imageList = new System.Windows.Forms.ImageList(this.components);

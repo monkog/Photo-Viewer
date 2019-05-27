@@ -4,11 +4,11 @@ using System.Windows.Forms;
 
 namespace PhotoViewer
 {
-    public partial class Wczytywanie : Form
+    public partial class DirectoryPicker : Form
     {
         string prevPath = "";
 
-        public Wczytywanie()
+        public DirectoryPicker()
         {
             InitializeComponent();
         }
@@ -34,7 +34,7 @@ namespace PhotoViewer
         {
             try
             {
-                var form = this.Owner as przegladarkaForm;
+                var form = this.Owner as MainWindow;
                 string[] folders = Directory.GetDirectories(path, "*", System.IO.SearchOption.TopDirectoryOnly);
 
                 if (folders.Length != 0)
@@ -87,7 +87,7 @@ namespace PhotoViewer
 
         private void addNode(string path, bool subdirectories)
         {
-            var form = this.Owner as przegladarkaForm;
+            var form = this.Owner as MainWindow;
             string[] paths = path.Split('\\');
             paths[0] = path.Substring(0, 3);
 
@@ -201,7 +201,7 @@ namespace PhotoViewer
         {
             if (this.ValidateChildren())
             {
-                var form = this.Owner as przegladarkaForm;
+                var form = this.Owner as MainWindow;
                 System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo(prevPath);
                 form.pathList.Add(new help(dir.GetFiles().Length, 1, prevPath));
                 form.currentPath = form.pathList.Count - 1;

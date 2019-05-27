@@ -1,6 +1,6 @@
 ﻿namespace PhotoViewer
 {
-    partial class Wczytywanie
+    partial class DirectoryPicker
     {
         /// <summary>
         /// Required designer variable.

@@ -44,40 +44,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FullscreenPic.cs">
+    <Compile Include="FullscreenPicture.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FullscreenPic.Designer.cs">
-      <DependentUpon>FullscreenPic.cs</DependentUpon>
+    <Compile Include="FullscreenPicture.Designer.cs">
+      <DependentUpon>FullscreenPicture.cs</DependentUpon>
     </Compile>
-    <Compile Include="Obraz.cs">
+    <Compile Include="Image.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Obraz.Designer.cs">
-      <DependentUpon>Obraz.cs</DependentUpon>
+    <Compile Include="Image.Designer.cs">
+      <DependentUpon>Image.cs</DependentUpon>
     </Compile>
-    <Compile Include="przegladarkaForm.cs">
+    <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="przegladarkaForm.Designer.cs">
-      <DependentUpon>przegladarkaForm.cs</DependentUpon>
+    <Compile Include="MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Wczytywanie.cs">
+    <Compile Include="DirectoryPicker.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Wczytywanie.Designer.cs">
-      <DependentUpon>Wczytywanie.cs</DependentUpon>
+    <Compile Include="DirectoryPicker.Designer.cs">
+      <DependentUpon>DirectoryPicker.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="FullscreenPic.resx">
-      <DependentUpon>FullscreenPic.cs</DependentUpon>
+    <EmbeddedResource Include="FullscreenPicture.resx">
+      <DependentUpon>FullscreenPicture.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Obraz.resx">
-      <DependentUpon>Obraz.cs</DependentUpon>
+    <EmbeddedResource Include="Image.resx">
+      <DependentUpon>Image.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="przegladarkaForm.resx">
-      <DependentUpon>przegladarkaForm.cs</DependentUpon>
+    <EmbeddedResource Include="MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -89,8 +89,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Wczytywanie.resx">
-      <DependentUpon>Wczytywanie.cs</DependentUpon>
+    <EmbeddedResource Include="DirectoryPicker.resx">
+      <DependentUpon>DirectoryPicker.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

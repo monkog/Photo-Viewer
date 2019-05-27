@@ -13,7 +13,7 @@ namespace PhotoViewer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new przegladarkaForm());
+            Application.Run(new MainWindow());
         }
     }
 }
