@@ -1,4 +1,4 @@
-﻿namespace WindowsFormsApplication1
+﻿namespace PhotoViewer
 {
     partial class przegladarkaForm
     {
@@ -165,7 +165,7 @@
             this.pictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox.ErrorImage = global::WindowsFormsApplication1.Properties.Resources.question;
+            this.pictureBox.ErrorImage = global::PhotoViewer.Properties.Resources.question;
             this.pictureBox.Location = new System.Drawing.Point(3, 3);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(529, 399);

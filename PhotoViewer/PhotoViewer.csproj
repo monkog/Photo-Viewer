@@ -7,8 +7,8 @@
     <ProjectGuid>{1C3F6D09-E044-4BC5-863F-BDEBBD6D1640}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WindowsFormsApplication1</RootNamespace>
-    <AssemblyName>WindowsFormsApplication1</AssemblyName>
+    <RootNamespace>PhotoViewer</RootNamespace>
+    <AssemblyName>PhotoViewer</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
