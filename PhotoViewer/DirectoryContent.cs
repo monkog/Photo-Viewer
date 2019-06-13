@@ -10,7 +10,7 @@
 		/// <summary>
 		/// Gets the currently displayed file index.
 		/// </summary>
-		public int CurrentIndex { get; }
+		public int CurrentIndex { get; set; }
 
 		/// <summary>
 		/// Gets the directory path.
