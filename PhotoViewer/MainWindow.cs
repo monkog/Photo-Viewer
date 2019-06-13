@@ -7,7 +7,7 @@ namespace PhotoViewer
 {
     public partial class MainWindow : Form
     {
-        public List<help> pathList;
+        public List<DirectoryContent> pathList;
         public int currentPath = -1;
 
         public MainWindow()
@@ -16,7 +16,7 @@ namespace PhotoViewer
             MinimizeBox = false;
             CurrentImage.Visible = false;
             History.Checked = true;
-            pathList = new List<help>();
+            pathList = new List<DirectoryContent>();
             HistoryList.SmallImageList = new ImageList();
             HistoryList.SmallImageList.Images.Add(Properties.Resources.imageDir);
         }
@@ -33,31 +33,31 @@ namespace PhotoViewer
 
 		private void ButtonLeftClick(object sender, MouseEventArgs e)
         {
-            if (pathList[currentPath].currentNumber > 1)
+            if (pathList[currentPath].CurrentIndex > 1)
             {
-                pathList[currentPath].currentNumber--;
-                ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
-                if (pathList[currentPath].currentNumber == 1)
+                pathList[currentPath].CurrentIndex--;
+                ImageIndex.Text = pathList[currentPath].CurrentIndex.ToString();
+                if (pathList[currentPath].CurrentIndex == 1)
                     ButtonLeft.Enabled = false;
                 if (ButtonRight.Enabled == false)
                     ButtonRight.Enabled = true;
 
-                string[] dirElems = Directory.GetFiles(pathList[currentPath].path);
-                CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+                string[] dirElems = Directory.GetFiles(pathList[currentPath].Path);
+                CurrentImage.ImageLocation = dirElems[pathList[currentPath].CurrentIndex - 1];
             }
         }
 
         private void ButtonRightClick(object sender, MouseEventArgs e)
         {
-            pathList[currentPath].currentNumber++;
-            ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
+            pathList[currentPath].CurrentIndex++;
+            ImageIndex.Text = pathList[currentPath].CurrentIndex.ToString();
             if (ButtonLeft.Enabled == false)
                 ButtonLeft.Enabled = true;
-            if (pathList[currentPath].currentNumber == pathList[currentPath].numberOfFiles)
+            if (pathList[currentPath].CurrentIndex == pathList[currentPath].FileCount)
                 ButtonRight.Enabled = false;
 
-            string[] dirElems = Directory.GetFiles(pathList[currentPath].path);
-            CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+            string[] dirElems = Directory.GetFiles(pathList[currentPath].Path);
+            CurrentImage.ImageLocation = dirElems[pathList[currentPath].CurrentIndex - 1];
         }
 		
         private void HistoryListClicked(object sender, EventArgs e)
@@ -65,11 +65,11 @@ namespace PhotoViewer
             ListView.SelectedIndexCollection indexes = this.HistoryList.SelectedIndices;
             currentPath = indexes[0];
 
-            if (pathList[currentPath].numberOfFiles > 0)
+            if (pathList[currentPath].FileCount > 0)
             {
-                string[] dirElems = Directory.GetFiles(pathList[currentPath].path);
+                string[] dirElems = Directory.GetFiles(pathList[currentPath].Path);
 
-                if (pathList[currentPath].currentNumber == 1)
+                if (pathList[currentPath].CurrentIndex == 1)
                 {
                     CurrentImage.ImageLocation = dirElems[0];
                     CurrentImage.Visible = true;
@@ -77,33 +77,33 @@ namespace PhotoViewer
                     ButtonLeft.Enabled = false;
                     ButtonRight.Visible = true;
                     ImageIndex.Visible = true;
-                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
-                    if (pathList[currentPath].numberOfFiles == 1)
+                    ImageIndex.Text = pathList[currentPath].CurrentIndex.ToString();
+                    if (pathList[currentPath].FileCount == 1)
                         ButtonRight.Enabled = false;
                     else
                         ButtonRight.Enabled = true;
                 }
-                else if (pathList[currentPath].currentNumber == pathList[currentPath].numberOfFiles)
+                else if (pathList[currentPath].CurrentIndex == pathList[currentPath].FileCount)
                 {
-                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].CurrentIndex - 1];
                     CurrentImage.Visible = true;
                     ButtonLeft.Visible = true;
                     ButtonLeft.Enabled = true;
                     ButtonRight.Visible = true;
                     ButtonRight.Enabled = false;
                     ImageIndex.Visible = true;
-                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
+                    ImageIndex.Text = pathList[currentPath].CurrentIndex.ToString();
                 }
                 else
                 {
-                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].CurrentIndex - 1];
                     CurrentImage.Visible = true;
                     ButtonLeft.Visible = true;
                     ButtonLeft.Enabled = true;
                     ButtonRight.Visible = true;
                     ButtonRight.Enabled = true;
                     ImageIndex.Visible = true;
-                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
+                    ImageIndex.Text = pathList[currentPath].CurrentIndex.ToString();
                 }
             }
             else
@@ -155,17 +155,17 @@ namespace PhotoViewer
             path = path.Substring(0,3) + path.Substring(4);
 
             for (int i = 0; i < pathList.Count; i++)
-                if (pathList[i].path == path)
+                if (pathList[i].Path == path)
                 {
                     currentPath = i;
                     break;
                 }
 
-            if (pathList[currentPath].numberOfFiles > 0)
+            if (pathList[currentPath].FileCount > 0)
             {
-                string[] dirElems = Directory.GetFiles(pathList[currentPath].path);
+                string[] dirElems = Directory.GetFiles(pathList[currentPath].Path);
 
-                if (pathList[currentPath].currentNumber == 1)
+                if (pathList[currentPath].CurrentIndex == 1)
                 {
                     CurrentImage.ImageLocation = dirElems[0];
                     CurrentImage.Visible = true;
@@ -173,33 +173,33 @@ namespace PhotoViewer
                     ButtonLeft.Enabled = false;
                     ButtonRight.Visible = true;
                     ImageIndex.Visible = true;
-                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
-                    if (pathList[currentPath].numberOfFiles == 1)
+                    ImageIndex.Text = pathList[currentPath].CurrentIndex.ToString();
+                    if (pathList[currentPath].FileCount == 1)
                         ButtonRight.Enabled = false;
                     else
                         ButtonRight.Enabled = true;
                 }
-                else if (pathList[currentPath].currentNumber == pathList[currentPath].numberOfFiles)
+                else if (pathList[currentPath].CurrentIndex == pathList[currentPath].FileCount)
                 {
-                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].CurrentIndex - 1];
                     CurrentImage.Visible = true;
                     ButtonLeft.Visible = true;
                     ButtonLeft.Enabled = true;
                     ButtonRight.Visible = true;
                     ButtonRight.Enabled = false;
                     ImageIndex.Visible = true;
-                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
+                    ImageIndex.Text = pathList[currentPath].CurrentIndex.ToString();
                 }
                 else
                 {
-                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].CurrentIndex - 1];
                     CurrentImage.Visible = true;
                     ButtonLeft.Visible = true;
                     ButtonLeft.Enabled = true;
                     ButtonRight.Visible = true;
                     ButtonRight.Enabled = true;
                     ImageIndex.Visible = true;
-                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
+                    ImageIndex.Text = pathList[currentPath].CurrentIndex.ToString();
                 }
             }
             else
@@ -211,19 +211,4 @@ namespace PhotoViewer
             }
         }
     }
-
-    public class help
-    {
-        public int numberOfFiles;
-        public int currentNumber;
-        public string path;
-
-        public help(int nof, int cn, string pth)
-        {
-            numberOfFiles = nof;
-            currentNumber = cn;
-            path = pth;
-        }
-    }
-
 }

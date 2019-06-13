@@ -48,7 +48,7 @@ namespace PhotoViewer
                     }
 
                     for (int i = 0; i < folders.Length; i++)
-                        form.pathList.Add(new help(dirs[i].GetFiles().Length, 1, folders[i]));
+                        form.pathList.Add(new DirectoryContent(dirs[i].GetFiles().Length, 1, folders[i]));
                 }
             }
             catch (System.UnauthorizedAccessException) { }
@@ -203,14 +203,14 @@ namespace PhotoViewer
             {
                 var form = this.Owner as MainWindow;
                 System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo(prevPath);
-                form.pathList.Add(new help(dir.GetFiles().Length, 1, prevPath));
+                form.pathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, prevPath));
                 form.currentPath = form.pathList.Count - 1;
 
-                string shortPath = form.pathList[form.currentPath].path.Substring(form.pathList[form.currentPath].path.LastIndexOf("\\") + 1);
+                string shortPath = form.pathList[form.currentPath].Path.Substring(form.pathList[form.currentPath].Path.LastIndexOf("\\") + 1);
                 if (shortPath == "")
-                    shortPath = form.pathList[form.currentPath].path;
+                    shortPath = form.pathList[form.currentPath].Path;
 
-                ListViewItem lvi = new ListViewItem(new[] { shortPath, form.pathList[form.currentPath].numberOfFiles.ToString() });
+                ListViewItem lvi = new ListViewItem(new[] { shortPath, form.pathList[form.currentPath].FileCount.ToString() });
                 lvi.ImageIndex = 0;
                 lvi.StateImageIndex = 0;
                 form.HistoryList.Items.Add(lvi);
@@ -218,30 +218,30 @@ namespace PhotoViewer
                 if (checkBox.Checked == true)
                 {
                     addItem(prevPath);
-                    addNode(form.pathList[form.currentPath].path, true);
+                    addNode(form.pathList[form.currentPath].Path, true);
 
                     for (int i = form.currentPath + 1; i < form.pathList.Count; i++)
                     {
-                        shortPath = form.pathList[i].path.Substring(form.pathList[i].path.LastIndexOf("\\") + 1);
+                        shortPath = form.pathList[i].Path.Substring(form.pathList[i].Path.LastIndexOf("\\") + 1);
                         if (shortPath == "")
-                            shortPath = form.pathList[i].path;
+                            shortPath = form.pathList[i].Path;
 
-                        lvi = new ListViewItem(new[] { shortPath, form.pathList[i].numberOfFiles.ToString() });
+                        lvi = new ListViewItem(new[] { shortPath, form.pathList[i].FileCount.ToString() });
                         form.HistoryList.Items.Add(lvi);
                         lvi.ImageIndex = 0;
                         lvi.StateImageIndex = 0;
                     }
                 }
                 else
-                    addNode(form.pathList[form.currentPath].path, false);
+                    addNode(form.pathList[form.currentPath].Path, false);
 
                 form.currentPath = form.pathList.Count - 1;
 
-                string[] dirElems = Directory.GetFiles(form.pathList[form.currentPath].path);
-                if (form.pathList[form.currentPath].numberOfFiles > 0)
+                string[] dirElems = Directory.GetFiles(form.pathList[form.currentPath].Path);
+                if (form.pathList[form.currentPath].FileCount > 0)
                     form.CurrentImage.ImageLocation = dirElems[0];
 
-                if (form.pathList[form.pathList.Count - 1].numberOfFiles != 0)
+                if (form.pathList[form.pathList.Count - 1].FileCount != 0)
                 {
                     form.currentPath = form.pathList.Count - 1;
                     form.CurrentImage.Visible = true;
@@ -249,8 +249,8 @@ namespace PhotoViewer
                     form.ButtonLeft.Enabled = false;
                     form.ButtonRight.Visible = true;
                     form.ImageIndex.Visible = true;
-                    form.ImageIndex.Text = form.pathList[form.currentPath].currentNumber.ToString();
-                    if (form.pathList[form.currentPath].numberOfFiles == 1)
+                    form.ImageIndex.Text = form.pathList[form.currentPath].CurrentIndex.ToString();
+                    if (form.pathList[form.currentPath].FileCount == 1)
                         form.ButtonRight.Enabled = false;
                     else
                         form.ButtonRight.Enabled = true;
