@@ -29,34 +29,34 @@
         private void InitializeComponent()
         {
 			this.components = new System.ComponentModel.Container();
-			this.label1 = new System.Windows.Forms.Label();
-			this.buttonOk = new System.Windows.Forms.Button();
+			this.AddFilesLabel = new System.Windows.Forms.Label();
+			this.Ok = new System.Windows.Forms.Button();
 			this.Close = new System.Windows.Forms.Button();
-			this.buttonPrzegladaj = new System.Windows.Forms.Button();
-			this.textBox = new System.Windows.Forms.TextBox();
+			this.Browse = new System.Windows.Forms.Button();
+			this.DirectoryPath = new System.Windows.Forms.TextBox();
 			this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-			this.checkBox = new System.Windows.Forms.CheckBox();
+			this.IncludeSubDirectories = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// label1
+			// AddFilesLabel
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 9);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(131, 13);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Add files from the directory";
+			this.AddFilesLabel.AutoSize = true;
+			this.AddFilesLabel.Location = new System.Drawing.Point(12, 9);
+			this.AddFilesLabel.Name = "AddFilesLabel";
+			this.AddFilesLabel.Size = new System.Drawing.Size(131, 13);
+			this.AddFilesLabel.TabIndex = 0;
+			this.AddFilesLabel.Text = "Add files from the directory";
 			// 
-			// buttonOk
+			// Ok
 			// 
-			this.buttonOk.Location = new System.Drawing.Point(62, 101);
-			this.buttonOk.Name = "buttonOk";
-			this.buttonOk.Size = new System.Drawing.Size(75, 23);
-			this.buttonOk.TabIndex = 1;
-			this.buttonOk.Text = "Ok";
-			this.buttonOk.UseVisualStyleBackColor = true;
-			this.buttonOk.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OkClick);
+			this.Ok.Location = new System.Drawing.Point(62, 101);
+			this.Ok.Name = "Ok";
+			this.Ok.Size = new System.Drawing.Size(75, 23);
+			this.Ok.TabIndex = 1;
+			this.Ok.Text = "Ok";
+			this.Ok.UseVisualStyleBackColor = true;
+			this.Ok.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OkClick);
 			// 
 			// Close
 			// 
@@ -69,54 +69,54 @@
 			this.Close.UseVisualStyleBackColor = true;
 			this.Close.MouseClick += new System.Windows.Forms.MouseEventHandler(this.CloseClick);
 			// 
-			// buttonPrzegladaj
+			// Browse
 			// 
-			this.buttonPrzegladaj.CausesValidation = false;
-			this.buttonPrzegladaj.Location = new System.Drawing.Point(173, 43);
-			this.buttonPrzegladaj.Name = "buttonPrzegladaj";
-			this.buttonPrzegladaj.Size = new System.Drawing.Size(75, 23);
-			this.buttonPrzegladaj.TabIndex = 3;
-			this.buttonPrzegladaj.Text = "Browse";
-			this.buttonPrzegladaj.UseVisualStyleBackColor = true;
-			this.buttonPrzegladaj.MouseClick += new System.Windows.Forms.MouseEventHandler(this.BrowseClick);
+			this.Browse.CausesValidation = false;
+			this.Browse.Location = new System.Drawing.Point(173, 43);
+			this.Browse.Name = "Browse";
+			this.Browse.Size = new System.Drawing.Size(75, 23);
+			this.Browse.TabIndex = 3;
+			this.Browse.Text = "Browse";
+			this.Browse.UseVisualStyleBackColor = true;
+			this.Browse.MouseClick += new System.Windows.Forms.MouseEventHandler(this.BrowseClick);
 			// 
-			// textBox
+			// DirectoryPath
 			// 
-			this.textBox.AccessibleRole = System.Windows.Forms.AccessibleRole.StaticText;
-			this.textBox.BackColor = System.Drawing.SystemColors.Control;
-			this.errorProvider.SetIconAlignment(this.textBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-			this.textBox.Location = new System.Drawing.Point(28, 43);
-			this.textBox.Name = "textBox";
-			this.textBox.ReadOnly = true;
-			this.textBox.Size = new System.Drawing.Size(139, 20);
-			this.textBox.TabIndex = 4;
-			this.textBox.Validating += new System.ComponentModel.CancelEventHandler(this.PathValidating);
+			this.DirectoryPath.AccessibleRole = System.Windows.Forms.AccessibleRole.StaticText;
+			this.DirectoryPath.BackColor = System.Drawing.SystemColors.Control;
+			this.errorProvider.SetIconAlignment(this.DirectoryPath, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
+			this.DirectoryPath.Location = new System.Drawing.Point(28, 43);
+			this.DirectoryPath.Name = "DirectoryPath";
+			this.DirectoryPath.ReadOnly = true;
+			this.DirectoryPath.Size = new System.Drawing.Size(139, 20);
+			this.DirectoryPath.TabIndex = 4;
+			this.DirectoryPath.Validating += new System.ComponentModel.CancelEventHandler(this.PathValidating);
 			// 
 			// errorProvider
 			// 
 			this.errorProvider.ContainerControl = this;
 			// 
-			// checkBox
+			// IncludeSubDirectories
 			// 
-			this.checkBox.AutoSize = true;
-			this.checkBox.Location = new System.Drawing.Point(49, 73);
-			this.checkBox.Name = "checkBox";
-			this.checkBox.Size = new System.Drawing.Size(132, 17);
-			this.checkBox.TabIndex = 5;
-			this.checkBox.Text = "Include sub-directories";
-			this.checkBox.UseVisualStyleBackColor = true;
+			this.IncludeSubDirectories.AutoSize = true;
+			this.IncludeSubDirectories.Location = new System.Drawing.Point(49, 73);
+			this.IncludeSubDirectories.Name = "IncludeSubDirectories";
+			this.IncludeSubDirectories.Size = new System.Drawing.Size(132, 17);
+			this.IncludeSubDirectories.TabIndex = 5;
+			this.IncludeSubDirectories.Text = "Include sub-directories";
+			this.IncludeSubDirectories.UseVisualStyleBackColor = true;
 			// 
 			// DirectoryPicker
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(261, 134);
-			this.Controls.Add(this.checkBox);
-			this.Controls.Add(this.textBox);
-			this.Controls.Add(this.buttonPrzegladaj);
+			this.Controls.Add(this.IncludeSubDirectories);
+			this.Controls.Add(this.DirectoryPath);
+			this.Controls.Add(this.Browse);
 			this.Controls.Add(this.Close);
-			this.Controls.Add(this.buttonOk);
-			this.Controls.Add(this.label1);
+			this.Controls.Add(this.Ok);
+			this.Controls.Add(this.AddFilesLabel);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "DirectoryPicker";
 			this.ShowIcon = false;
@@ -130,12 +130,12 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button buttonOk;
+        private System.Windows.Forms.Label AddFilesLabel;
+        private System.Windows.Forms.Button Ok;
         private System.Windows.Forms.Button Close;
-        private System.Windows.Forms.Button buttonPrzegladaj;
-        private System.Windows.Forms.TextBox textBox;
+        private System.Windows.Forms.Button Browse;
+        private System.Windows.Forms.TextBox DirectoryPath;
         private System.Windows.Forms.ErrorProvider errorProvider;
-        private System.Windows.Forms.CheckBox checkBox;
+        private System.Windows.Forms.CheckBox IncludeSubDirectories;
     }
 }

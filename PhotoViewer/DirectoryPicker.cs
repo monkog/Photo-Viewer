@@ -7,8 +7,6 @@ namespace PhotoViewer
 {
     public partial class DirectoryPicker : Form
     {
-        private string _prevPath = string.Empty;
-
         public DirectoryPicker()
         {
             InitializeComponent();
@@ -20,9 +18,8 @@ namespace PhotoViewer
 	        {
 		        folderBrowserDialog.ShowDialog();
 		        if (string.IsNullOrEmpty(folderBrowserDialog.SelectedPath)) return;
-
-		        _prevPath = folderBrowserDialog.SelectedPath;
-		        textBox.Text = folderBrowserDialog.SelectedPath;
+				
+		        DirectoryPath.Text = folderBrowserDialog.SelectedPath;
 	        }
         }
 
@@ -35,8 +32,8 @@ namespace PhotoViewer
         {
 	        if (!ValidateChildren()) return;
 	        var form = Owner as MainWindow;
-	        var dir = new DirectoryInfo(_prevPath);
-	        form.pathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, _prevPath));
+	        var dir = new DirectoryInfo(DirectoryPath.Text);
+	        form.pathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, DirectoryPath.Text));
 	        form.currentPath = form.pathList.Count - 1;
 
 	        var shortPath = form.pathList[form.currentPath].Path.Substring(form.pathList[form.currentPath].Path.LastIndexOf("\\") + 1);
@@ -49,9 +46,9 @@ namespace PhotoViewer
 	        };
 	        form.HistoryList.Items.Add(lvi);
 
-	        if (checkBox.Checked)
+	        if (IncludeSubDirectories.Checked)
 	        {
-		        AddItem(_prevPath);
+		        AddItem(DirectoryPath.Text);
 		        AddNode(form.pathList[form.currentPath].Path, true);
 
 		        for (var i = form.currentPath + 1; i < form.pathList.Count; i++)
@@ -99,9 +96,9 @@ namespace PhotoViewer
 
         private void PathValidating(object sender, CancelEventArgs e)
         {
-            if (textBox.Text.Length == 0)
+            if (DirectoryPath.Text.Length == 0)
             {
-                errorProvider.SetError(textBox, Resources.ProvideDirectoryPath);
+                errorProvider.SetError(DirectoryPath, Resources.ProvideDirectoryPath);
                 e.Cancel = true;
                 return;
             }
