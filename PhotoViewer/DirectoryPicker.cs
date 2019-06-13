@@ -96,7 +96,7 @@ namespace PhotoViewer
                 addNode(path, false);
 
                 TreeNode root = null;
-                foreach (TreeNode tn in form.treeView.Nodes)
+                foreach (TreeNode tn in form.TreeView.Nodes)
                     if (tn.Text == paths[0])
                     {
                         root = tn;
@@ -115,7 +115,7 @@ namespace PhotoViewer
             {
                 bool exists = false;
 
-                foreach (TreeNode node in form.treeView.Nodes)
+                foreach (TreeNode node in form.TreeView.Nodes)
                 {
                     if (node.Text == paths[0])
                     {
@@ -127,7 +127,7 @@ namespace PhotoViewer
                 if (exists)
                 {
                     TreeNode root = null;
-                    foreach (TreeNode tn in form.treeView.Nodes)
+                    foreach (TreeNode tn in form.TreeView.Nodes)
                         if (tn.Text == paths[0])
                         {
                             root = tn;
@@ -172,7 +172,7 @@ namespace PhotoViewer
                 }
                 else
                 {
-                    TreeNode root = form.treeView.Nodes.Add(paths[0]);
+                    TreeNode root = form.TreeView.Nodes.Add(paths[0]);
                     TreeNode defRoot = root;
 
                     for (int i = 1; i < paths.Length; i++)
@@ -213,7 +213,7 @@ namespace PhotoViewer
                 ListViewItem lvi = new ListViewItem(new[] { shortPath, form.pathList[form.currentPath].numberOfFiles.ToString() });
                 lvi.ImageIndex = 0;
                 lvi.StateImageIndex = 0;
-                form.listViewHistoria.Items.Add(lvi);
+                form.HistoryList.Items.Add(lvi);
 
                 if (checkBox.Checked == true)
                 {
@@ -227,7 +227,7 @@ namespace PhotoViewer
                             shortPath = form.pathList[i].path;
 
                         lvi = new ListViewItem(new[] { shortPath, form.pathList[i].numberOfFiles.ToString() });
-                        form.listViewHistoria.Items.Add(lvi);
+                        form.HistoryList.Items.Add(lvi);
                         lvi.ImageIndex = 0;
                         lvi.StateImageIndex = 0;
                     }
@@ -239,28 +239,28 @@ namespace PhotoViewer
 
                 string[] dirElems = Directory.GetFiles(form.pathList[form.currentPath].path);
                 if (form.pathList[form.currentPath].numberOfFiles > 0)
-                    form.pictureBox.ImageLocation = dirElems[0];
+                    form.CurrentImage.ImageLocation = dirElems[0];
 
                 if (form.pathList[form.pathList.Count - 1].numberOfFiles != 0)
                 {
                     form.currentPath = form.pathList.Count - 1;
-                    form.pictureBox.Visible = true;
-                    form.buttonLeft.Visible = true;
-                    form.buttonLeft.Enabled = false;
-                    form.buttonRight.Visible = true;
-                    form.labelNumber.Visible = true;
-                    form.labelNumber.Text = form.pathList[form.currentPath].currentNumber.ToString();
+                    form.CurrentImage.Visible = true;
+                    form.ButtonLeft.Visible = true;
+                    form.ButtonLeft.Enabled = false;
+                    form.ButtonRight.Visible = true;
+                    form.ImageIndex.Visible = true;
+                    form.ImageIndex.Text = form.pathList[form.currentPath].currentNumber.ToString();
                     if (form.pathList[form.currentPath].numberOfFiles == 1)
-                        form.buttonRight.Enabled = false;
+                        form.ButtonRight.Enabled = false;
                     else
-                        form.buttonRight.Enabled = true;
+                        form.ButtonRight.Enabled = true;
                 }
                 else
                 {
-                    form.buttonLeft.Visible = false;
-                    form.buttonRight.Visible = false;
-                    form.labelNumber.Visible = false;
-                    form.pictureBox.Visible = false;
+                    form.ButtonLeft.Visible = false;
+                    form.ButtonRight.Visible = false;
+                    form.ImageIndex.Visible = false;
+                    form.CurrentImage.Visible = false;
                 }
 
                 Close();

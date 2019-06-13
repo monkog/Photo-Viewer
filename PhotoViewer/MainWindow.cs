@@ -14,14 +14,14 @@ namespace PhotoViewer
         {
             InitializeComponent();
             MinimizeBox = false;
-            pictureBox.Visible = false;
-            radioHistoria.Checked = true;
+            CurrentImage.Visible = false;
+            History.Checked = true;
             pathList = new List<help>();
-            listViewHistoria.SmallImageList = new ImageList();
-            listViewHistoria.SmallImageList.Images.Add(Properties.Resources.imageDir);
+            HistoryList.SmallImageList = new ImageList();
+            HistoryList.SmallImageList.Images.Add(Properties.Resources.imageDir);
         }
 
-        private void buttonWczytaj_MouseClick(object sender, MouseEventArgs e)
+        private void BrowseClick(object sender, MouseEventArgs e)
         {
             DirectoryPicker wczytaj = new DirectoryPicker();
             wczytaj.Owner = this;
@@ -31,38 +31,38 @@ namespace PhotoViewer
             wczytaj.ShowDialog();
         }
 
-        private void buttonLeft_MouseClick(object sender, MouseEventArgs e)
+		private void ButtonLeftClick(object sender, MouseEventArgs e)
         {
             if (pathList[currentPath].currentNumber > 1)
             {
                 pathList[currentPath].currentNumber--;
-                labelNumber.Text = pathList[currentPath].currentNumber.ToString();
+                ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
                 if (pathList[currentPath].currentNumber == 1)
-                    buttonLeft.Enabled = false;
-                if (buttonRight.Enabled == false)
-                    buttonRight.Enabled = true;
+                    ButtonLeft.Enabled = false;
+                if (ButtonRight.Enabled == false)
+                    ButtonRight.Enabled = true;
 
                 string[] dirElems = Directory.GetFiles(pathList[currentPath].path);
-                pictureBox.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+                CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
             }
         }
 
-        private void buttonRight_MouseClick(object sender, MouseEventArgs e)
+        private void ButtonRightClick(object sender, MouseEventArgs e)
         {
             pathList[currentPath].currentNumber++;
-            labelNumber.Text = pathList[currentPath].currentNumber.ToString();
-            if (buttonLeft.Enabled == false)
-                buttonLeft.Enabled = true;
+            ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
+            if (ButtonLeft.Enabled == false)
+                ButtonLeft.Enabled = true;
             if (pathList[currentPath].currentNumber == pathList[currentPath].numberOfFiles)
-                buttonRight.Enabled = false;
+                ButtonRight.Enabled = false;
 
             string[] dirElems = Directory.GetFiles(pathList[currentPath].path);
-            pictureBox.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+            CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
         }
-
-        private void listViewHistoria_Click(object sender, EventArgs e)
+		
+        private void HistoryListClicked(object sender, EventArgs e)
         {
-            ListView.SelectedIndexCollection indexes = this.listViewHistoria.SelectedIndices;
+            ListView.SelectedIndexCollection indexes = this.HistoryList.SelectedIndices;
             currentPath = indexes[0];
 
             if (pathList[currentPath].numberOfFiles > 0)
@@ -71,53 +71,53 @@ namespace PhotoViewer
 
                 if (pathList[currentPath].currentNumber == 1)
                 {
-                    pictureBox.ImageLocation = dirElems[0];
-                    pictureBox.Visible = true;
-                    buttonLeft.Visible = true;
-                    buttonLeft.Enabled = false;
-                    buttonRight.Visible = true;
-                    labelNumber.Visible = true;
-                    labelNumber.Text = pathList[currentPath].currentNumber.ToString();
+                    CurrentImage.ImageLocation = dirElems[0];
+                    CurrentImage.Visible = true;
+                    ButtonLeft.Visible = true;
+                    ButtonLeft.Enabled = false;
+                    ButtonRight.Visible = true;
+                    ImageIndex.Visible = true;
+                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
                     if (pathList[currentPath].numberOfFiles == 1)
-                        buttonRight.Enabled = false;
+                        ButtonRight.Enabled = false;
                     else
-                        buttonRight.Enabled = true;
+                        ButtonRight.Enabled = true;
                 }
                 else if (pathList[currentPath].currentNumber == pathList[currentPath].numberOfFiles)
                 {
-                    pictureBox.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
-                    pictureBox.Visible = true;
-                    buttonLeft.Visible = true;
-                    buttonLeft.Enabled = true;
-                    buttonRight.Visible = true;
-                    buttonRight.Enabled = false;
-                    labelNumber.Visible = true;
-                    labelNumber.Text = pathList[currentPath].currentNumber.ToString();
+                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+                    CurrentImage.Visible = true;
+                    ButtonLeft.Visible = true;
+                    ButtonLeft.Enabled = true;
+                    ButtonRight.Visible = true;
+                    ButtonRight.Enabled = false;
+                    ImageIndex.Visible = true;
+                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
                 }
                 else
                 {
-                    pictureBox.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
-                    pictureBox.Visible = true;
-                    buttonLeft.Visible = true;
-                    buttonLeft.Enabled = true;
-                    buttonRight.Visible = true;
-                    buttonRight.Enabled = true;
-                    labelNumber.Visible = true;
-                    labelNumber.Text = pathList[currentPath].currentNumber.ToString();
+                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+                    CurrentImage.Visible = true;
+                    ButtonLeft.Visible = true;
+                    ButtonLeft.Enabled = true;
+                    ButtonRight.Visible = true;
+                    ButtonRight.Enabled = true;
+                    ImageIndex.Visible = true;
+                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
                 }
             }
             else
             {
-                buttonLeft.Visible = false;
-                buttonRight.Visible = false;
-                labelNumber.Visible = false;
-                pictureBox.Visible = false;
+                ButtonLeft.Visible = false;
+                ButtonRight.Visible = false;
+                ImageIndex.Visible = false;
+                CurrentImage.Visible = false;
             }
         }
 
-        private void pictureBox_DoubleClick(object sender, EventArgs e)
+        private void CurrentImageDoubleClick(object sender, EventArgs e)
         {
-            if (pictureBox.Visible == true)
+            if (CurrentImage.Visible == true)
             {
                 Image obraz = new Image();
                 obraz.Owner = this;
@@ -130,26 +130,26 @@ namespace PhotoViewer
                 obraz.Show();
             }
         }
-
-        private void radioHistoria_CheckedChanged(object sender, EventArgs e)
+		
+        private void HistoryCheckedChanged(object sender, EventArgs e)
         {
-            if (radioHistoria.Checked == true)
+            if (History.Checked == true)
             {
-                listViewHistoria.Enabled = true;
-                listViewHistoria.Visible = true;
-                treeView.Enabled = false;
-                treeView.Visible = false;
+                HistoryList.Enabled = true;
+                HistoryList.Visible = true;
+                TreeView.Enabled = false;
+                TreeView.Visible = false;
             }
             else
             {
-                listViewHistoria.Enabled = false;
-                listViewHistoria.Visible = false;
-                treeView.Enabled = true;
-                treeView.Visible = true;
+                HistoryList.Enabled = false;
+                HistoryList.Visible = false;
+                TreeView.Enabled = true;
+                TreeView.Visible = true;
             }
         }
-
-        private void treeView_AfterSelect(object sender, TreeViewEventArgs e)
+		
+        private void TreeItemSelected(object sender, TreeViewEventArgs e)
         {
             string path = e.Node.FullPath;
             path = path.Substring(0,3) + path.Substring(4);
@@ -167,47 +167,47 @@ namespace PhotoViewer
 
                 if (pathList[currentPath].currentNumber == 1)
                 {
-                    pictureBox.ImageLocation = dirElems[0];
-                    pictureBox.Visible = true;
-                    buttonLeft.Visible = true;
-                    buttonLeft.Enabled = false;
-                    buttonRight.Visible = true;
-                    labelNumber.Visible = true;
-                    labelNumber.Text = pathList[currentPath].currentNumber.ToString();
+                    CurrentImage.ImageLocation = dirElems[0];
+                    CurrentImage.Visible = true;
+                    ButtonLeft.Visible = true;
+                    ButtonLeft.Enabled = false;
+                    ButtonRight.Visible = true;
+                    ImageIndex.Visible = true;
+                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
                     if (pathList[currentPath].numberOfFiles == 1)
-                        buttonRight.Enabled = false;
+                        ButtonRight.Enabled = false;
                     else
-                        buttonRight.Enabled = true;
+                        ButtonRight.Enabled = true;
                 }
                 else if (pathList[currentPath].currentNumber == pathList[currentPath].numberOfFiles)
                 {
-                    pictureBox.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
-                    pictureBox.Visible = true;
-                    buttonLeft.Visible = true;
-                    buttonLeft.Enabled = true;
-                    buttonRight.Visible = true;
-                    buttonRight.Enabled = false;
-                    labelNumber.Visible = true;
-                    labelNumber.Text = pathList[currentPath].currentNumber.ToString();
+                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+                    CurrentImage.Visible = true;
+                    ButtonLeft.Visible = true;
+                    ButtonLeft.Enabled = true;
+                    ButtonRight.Visible = true;
+                    ButtonRight.Enabled = false;
+                    ImageIndex.Visible = true;
+                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
                 }
                 else
                 {
-                    pictureBox.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
-                    pictureBox.Visible = true;
-                    buttonLeft.Visible = true;
-                    buttonLeft.Enabled = true;
-                    buttonRight.Visible = true;
-                    buttonRight.Enabled = true;
-                    labelNumber.Visible = true;
-                    labelNumber.Text = pathList[currentPath].currentNumber.ToString();
+                    CurrentImage.ImageLocation = dirElems[pathList[currentPath].currentNumber - 1];
+                    CurrentImage.Visible = true;
+                    ButtonLeft.Visible = true;
+                    ButtonLeft.Enabled = true;
+                    ButtonRight.Visible = true;
+                    ButtonRight.Enabled = true;
+                    ImageIndex.Visible = true;
+                    ImageIndex.Text = pathList[currentPath].currentNumber.ToString();
                 }
             }
             else
             {
-                buttonLeft.Visible = false;
-                buttonRight.Visible = false;
-                labelNumber.Visible = false;
-                pictureBox.Visible = false;
+                ButtonLeft.Visible = false;
+                ButtonRight.Visible = false;
+                ImageIndex.Visible = false;
+                CurrentImage.Visible = false;
             }
         }
     }

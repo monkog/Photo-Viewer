@@ -27,12 +27,12 @@ namespace PhotoViewer
             fp.TopMost = true;
             string[] dirElems = Directory.GetFiles(form.pathList[form.currentPath].path);
 
-            if (form.pictureBox.Image == form.pictureBox.ErrorImage)
+            if (form.CurrentImage.Image == form.CurrentImage.ErrorImage)
                 fp.pictureBoxO.Image = Properties.Resources.question;
             else
                 fp.pictureBoxO.ImageLocation = dirElems[form.pathList[form.currentPath].currentNumber - 1];
             
-            fp.Size = new Size(form.pictureBox.Image.Size.Width, form.pictureBox.Image.Size.Height);
+            fp.Size = new Size(form.CurrentImage.Image.Size.Width, form.CurrentImage.Image.Size.Height);
             fp.pictureBoxO.Size = new Size(fp.Size.Width, fp.Size.Height);
             fp.pictureBoxO.Location = new Point(0, 0);
             fp.width = fp.Size.Width;
