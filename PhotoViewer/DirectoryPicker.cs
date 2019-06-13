@@ -1,68 +1,146 @@
 ﻿using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
+using PhotoViewer.Properties;
 
 namespace PhotoViewer
 {
     public partial class DirectoryPicker : Form
     {
-        string prevPath = "";
+        private string _prevPath = string.Empty;
 
         public DirectoryPicker()
         {
             InitializeComponent();
         }
 
-        private void buttonZamknij_MouseClick(object sender, MouseEventArgs e)
+        private void BrowseClick(object sender, MouseEventArgs e)
+        {
+	        using (var folderBrowserDialog = new FolderBrowserDialog())
+	        {
+		        folderBrowserDialog.ShowDialog();
+		        if (string.IsNullOrEmpty(folderBrowserDialog.SelectedPath)) return;
+
+		        _prevPath = folderBrowserDialog.SelectedPath;
+		        textBox.Text = folderBrowserDialog.SelectedPath;
+	        }
+        }
+
+        private void CloseClick(object sender, MouseEventArgs e)
         {
             Close();
         }
 
-        private void textBox_Validating(object sender, CancelEventArgs e)
+        private void OkClick(object sender, MouseEventArgs e)
+        {
+	        if (!ValidateChildren()) return;
+	        var form = Owner as MainWindow;
+	        var dir = new DirectoryInfo(_prevPath);
+	        form.pathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, _prevPath));
+	        form.currentPath = form.pathList.Count - 1;
+
+	        var shortPath = form.pathList[form.currentPath].Path.Substring(form.pathList[form.currentPath].Path.LastIndexOf("\\") + 1);
+	        if (shortPath == "")
+		        shortPath = form.pathList[form.currentPath].Path;
+
+	        var lvi = new ListViewItem(new[] {shortPath, form.pathList[form.currentPath].FileCount.ToString()})
+	        {
+		        ImageIndex = 0, StateImageIndex = 0
+	        };
+	        form.HistoryList.Items.Add(lvi);
+
+	        if (checkBox.Checked)
+	        {
+		        AddItem(_prevPath);
+		        AddNode(form.pathList[form.currentPath].Path, true);
+
+		        for (var i = form.currentPath + 1; i < form.pathList.Count; i++)
+		        {
+			        shortPath = form.pathList[i].Path.Substring(form.pathList[i].Path.LastIndexOf("\\") + 1);
+			        if (shortPath == "")
+				        shortPath = form.pathList[i].Path;
+
+			        lvi = new ListViewItem(new[] { shortPath, form.pathList[i].FileCount.ToString() });
+			        form.HistoryList.Items.Add(lvi);
+			        lvi.ImageIndex = 0;
+			        lvi.StateImageIndex = 0;
+		        }
+	        }
+	        else
+		        AddNode(form.pathList[form.currentPath].Path, false);
+
+	        form.currentPath = form.pathList.Count - 1;
+
+	        var dirElems = Directory.GetFiles(form.pathList[form.currentPath].Path);
+	        if (form.pathList[form.currentPath].FileCount > 0)
+		        form.CurrentImage.ImageLocation = dirElems[0];
+
+	        if (form.pathList[form.pathList.Count - 1].FileCount != 0)
+	        {
+		        form.currentPath = form.pathList.Count - 1;
+		        form.CurrentImage.Visible = true;
+		        form.ButtonLeft.Visible = true;
+		        form.ButtonLeft.Enabled = false;
+		        form.ButtonRight.Visible = true;
+		        form.ImageIndex.Visible = true;
+		        form.ImageIndex.Text = form.pathList[form.currentPath].CurrentIndex.ToString();
+		        form.ButtonRight.Enabled = form.pathList[form.currentPath].FileCount != 1;
+	        }
+	        else
+	        {
+		        form.ButtonLeft.Visible = false;
+		        form.ButtonRight.Visible = false;
+		        form.ImageIndex.Visible = false;
+		        form.CurrentImage.Visible = false;
+	        }
+
+	        Close();
+        }
+
+        private void PathValidating(object sender, CancelEventArgs e)
         {
             if (textBox.Text.Length == 0)
             {
-                errorProvider.SetError(textBox, "Podaj ścieżkę do katalogu");
+                errorProvider.SetError(textBox, Resources.ProvideDirectoryPath);
                 e.Cancel = true;
                 return;
             }
-            errorProvider.SetError(textBox, "");
+
+            errorProvider.Clear();
             e.Cancel = false;
         }
 
-        private void addItem(string path)
+        private void AddItem(string path)
         {
             try
             {
-                var form = this.Owner as MainWindow;
-                string[] folders = Directory.GetDirectories(path, "*", System.IO.SearchOption.TopDirectoryOnly);
+                var form = Owner as MainWindow;
+                var folders = Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly);
 
-                if (folders.Length != 0)
+                if (folders.Length == 0) return;
+                var dirs = new DirectoryInfo[folders.Length];
+
+                for (var i = 0; i < folders.Length; i++)
                 {
-                    System.IO.DirectoryInfo[] dirs = new System.IO.DirectoryInfo[folders.Length];
-
-                    for (int i = 0; i < folders.Length; i++)
-                    {
-                        dirs[i] = new System.IO.DirectoryInfo(folders[i]);
-                        addItem(dirs[i].ToString());
-                    }
-
-                    for (int i = 0; i < folders.Length; i++)
-                        form.pathList.Add(new DirectoryContent(dirs[i].GetFiles().Length, 1, folders[i]));
+	                dirs[i] = new DirectoryInfo(folders[i]);
+	                AddItem(dirs[i].ToString());
                 }
+
+                for (var i = 0; i < folders.Length; i++)
+	                form.pathList.Add(new DirectoryContent(dirs[i].GetFiles().Length, 1, folders[i]));
             }
             catch (System.UnauthorizedAccessException) { }
         }
 
-        private void addSubs(TreeNode node, string path)
+        private static void AddSubs(TreeNode node, string path)
         {
-            string[] folders = Directory.GetDirectories(path, "*", System.IO.SearchOption.TopDirectoryOnly);
-            string[] shortFolders = new string[folders.Length];
+            var folders = Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly);
+            var shortFolders = new string[folders.Length];
 
-            for (int i = 0; i < folders.Length; i++)
+            for (var i = 0; i < folders.Length; i++)
             {
                 shortFolders[i] = folders[i].Substring(folders[i].LastIndexOf("\\") + 1);
-                bool exists = false;
+                var exists = false;
 
                 foreach (TreeNode tn in node.Nodes)
                     if (tn.Text == shortFolders[i])
@@ -72,28 +150,28 @@ namespace PhotoViewer
                     node.Nodes.Add(shortFolders[i]);
             }
 
-            int j = 0;
+            var j = 0;
             if (folders.Length != 0)
             {
                 foreach (TreeNode tn in node.Nodes)
                 {
                     tn.ImageIndex = 1;
                     tn.SelectedImageIndex = 1;
-                    addSubs(tn, folders[j++]);
+                    AddSubs(tn, folders[j++]);
                 }
             }
             node.ExpandAll();
         }
 
-        private void addNode(string path, bool subdirectories)
+        private void AddNode(string path, bool subdirectories)
         {
-            var form = this.Owner as MainWindow;
-            string[] paths = path.Split('\\');
+            var form = Owner as MainWindow;
+            var paths = path.Split('\\');
             paths[0] = path.Substring(0, 3);
 
             if (subdirectories)
             {
-                addNode(path, false);
+                AddNode(path, false);
 
                 TreeNode root = null;
                 foreach (TreeNode tn in form.TreeView.Nodes)
@@ -103,25 +181,23 @@ namespace PhotoViewer
                         break;
                     }
 
-                int i = 0;
+                var i = 0;
                 while (root.Text != paths[paths.Length - 1])
                     foreach (TreeNode tn in root.Nodes)
                         if (tn.Text == paths[i++])
                             root = tn;
 
-                addSubs(root, path);
+                AddSubs(root, path);
             }
             else
             {
-                bool exists = false;
+                var exists = false;
 
                 foreach (TreeNode node in form.TreeView.Nodes)
                 {
-                    if (node.Text == paths[0])
-                    {
-                        exists = true;
-                        break;
-                    }
+	                if (node.Text != paths[0]) continue;
+	                exists = true;
+                    break;
                 }
 
                 if (exists)
@@ -134,10 +210,10 @@ namespace PhotoViewer
                             break;
                         }
 
-                    bool pathExists = true;
-                    int i = 1;
+                    var pathExists = true;
+                    var i = 1;
 
-                    for (i = 1; i < paths.Length && pathExists == true; i++)
+                    for (i = 1; i < paths.Length && pathExists; i++)
                     {
                         pathExists = false;
                         foreach (TreeNode node in root.Nodes)
@@ -148,36 +224,36 @@ namespace PhotoViewer
                             }
                     }
 
-                    if (pathExists == false)
+                    if (pathExists) return;
                     {
-                        i--;
-                        for (; i < paths.Length; i++)
-                        {
-                            TreeNode tn = new TreeNode(paths[i]);
-                            root.Nodes.Add(tn);
-                            root = tn;
-                            root.Expand();
-                            if (i != paths.Length - 1)
-                            {
-                                tn.ImageIndex = 0;
-                                tn.SelectedImageIndex = 0;
-                            }
-                            else
-                            {
-                                tn.ImageIndex = 1;
-                                tn.SelectedImageIndex = 1;
-                            }
-                        }
+	                    i--;
+	                    for (; i < paths.Length; i++)
+	                    {
+		                    var tn = new TreeNode(paths[i]);
+		                    root.Nodes.Add(tn);
+		                    root = tn;
+		                    root.Expand();
+		                    if (i != paths.Length - 1)
+		                    {
+			                    tn.ImageIndex = 0;
+			                    tn.SelectedImageIndex = 0;
+		                    }
+		                    else
+		                    {
+			                    tn.ImageIndex = 1;
+			                    tn.SelectedImageIndex = 1;
+		                    }
+	                    }
                     }
                 }
                 else
                 {
-                    TreeNode root = form.TreeView.Nodes.Add(paths[0]);
-                    TreeNode defRoot = root;
+                    var root = form.TreeView.Nodes.Add(paths[0]);
+                    var defRoot = root;
 
-                    for (int i = 1; i < paths.Length; i++)
+                    for (var i = 1; i < paths.Length; i++)
                     {
-                        TreeNode tn = new TreeNode(paths[i]);
+                        var tn = new TreeNode(paths[i]);
                         root.Nodes.Add(tn);
                         root = tn;
                         root.Expand();
@@ -195,89 +271,6 @@ namespace PhotoViewer
                     defRoot.ExpandAll();
                 }
             }
-        }
-
-        private void buttonOk_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (this.ValidateChildren())
-            {
-                var form = this.Owner as MainWindow;
-                System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo(prevPath);
-                form.pathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, prevPath));
-                form.currentPath = form.pathList.Count - 1;
-
-                string shortPath = form.pathList[form.currentPath].Path.Substring(form.pathList[form.currentPath].Path.LastIndexOf("\\") + 1);
-                if (shortPath == "")
-                    shortPath = form.pathList[form.currentPath].Path;
-
-                ListViewItem lvi = new ListViewItem(new[] { shortPath, form.pathList[form.currentPath].FileCount.ToString() });
-                lvi.ImageIndex = 0;
-                lvi.StateImageIndex = 0;
-                form.HistoryList.Items.Add(lvi);
-
-                if (checkBox.Checked == true)
-                {
-                    addItem(prevPath);
-                    addNode(form.pathList[form.currentPath].Path, true);
-
-                    for (int i = form.currentPath + 1; i < form.pathList.Count; i++)
-                    {
-                        shortPath = form.pathList[i].Path.Substring(form.pathList[i].Path.LastIndexOf("\\") + 1);
-                        if (shortPath == "")
-                            shortPath = form.pathList[i].Path;
-
-                        lvi = new ListViewItem(new[] { shortPath, form.pathList[i].FileCount.ToString() });
-                        form.HistoryList.Items.Add(lvi);
-                        lvi.ImageIndex = 0;
-                        lvi.StateImageIndex = 0;
-                    }
-                }
-                else
-                    addNode(form.pathList[form.currentPath].Path, false);
-
-                form.currentPath = form.pathList.Count - 1;
-
-                string[] dirElems = Directory.GetFiles(form.pathList[form.currentPath].Path);
-                if (form.pathList[form.currentPath].FileCount > 0)
-                    form.CurrentImage.ImageLocation = dirElems[0];
-
-                if (form.pathList[form.pathList.Count - 1].FileCount != 0)
-                {
-                    form.currentPath = form.pathList.Count - 1;
-                    form.CurrentImage.Visible = true;
-                    form.ButtonLeft.Visible = true;
-                    form.ButtonLeft.Enabled = false;
-                    form.ButtonRight.Visible = true;
-                    form.ImageIndex.Visible = true;
-                    form.ImageIndex.Text = form.pathList[form.currentPath].CurrentIndex.ToString();
-                    if (form.pathList[form.currentPath].FileCount == 1)
-                        form.ButtonRight.Enabled = false;
-                    else
-                        form.ButtonRight.Enabled = true;
-                }
-                else
-                {
-                    form.ButtonLeft.Visible = false;
-                    form.ButtonRight.Visible = false;
-                    form.ImageIndex.Visible = false;
-                    form.CurrentImage.Visible = false;
-                }
-
-                Close();
-            }
-        }
-
-        private void buttonPrzegladaj_MouseClick(object sender, MouseEventArgs e)
-        {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.ShowDialog();
-            if (fbd.SelectedPath != "")
-            {
-                prevPath = fbd.SelectedPath;
-                textBox.Text = fbd.SelectedPath;
-            }
-            else if (prevPath != "")
-                textBox.Text = prevPath;
         }
     }
 }

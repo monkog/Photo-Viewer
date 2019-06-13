@@ -124,6 +124,9 @@
   <data name="imageDir" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\imageDir.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ProvideDirectoryPath" xml:space="preserve">
+    <value>Please provide a directory path</value>
+  </data>
   <data name="question" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\question.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

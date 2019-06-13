@@ -81,6 +81,15 @@ namespace PhotoViewer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please provide a directory path.
+        /// </summary>
+        internal static string ProvideDirectoryPath {
+            get {
+                return ResourceManager.GetString("ProvideDirectoryPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap question {
