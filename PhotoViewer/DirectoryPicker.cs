@@ -33,14 +33,14 @@ namespace PhotoViewer
 	        if (!ValidateChildren()) return;
 	        var form = Owner as MainWindow;
 	        var dir = new DirectoryInfo(DirectoryPath.Text);
-	        form.pathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, DirectoryPath.Text));
-	        form.currentPath = form.pathList.Count - 1;
+	        form.PathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, DirectoryPath.Text));
+	        form.CurrentPath = form.PathList.Count - 1;
 
-	        var shortPath = form.pathList[form.currentPath].Path.Substring(form.pathList[form.currentPath].Path.LastIndexOf("\\") + 1);
+	        var shortPath = form.PathList[form.CurrentPath].Path.Substring(form.PathList[form.CurrentPath].Path.LastIndexOf("\\") + 1);
 	        if (shortPath == "")
-		        shortPath = form.pathList[form.currentPath].Path;
+		        shortPath = form.PathList[form.CurrentPath].Path;
 
-	        var lvi = new ListViewItem(new[] {shortPath, form.pathList[form.currentPath].FileCount.ToString()})
+	        var lvi = new ListViewItem(new[] {shortPath, form.PathList[form.CurrentPath].FileCount.ToString()})
 	        {
 		        ImageIndex = 0, StateImageIndex = 0
 	        };
@@ -49,39 +49,39 @@ namespace PhotoViewer
 	        if (IncludeSubDirectories.Checked)
 	        {
 		        AddItem(DirectoryPath.Text);
-		        AddNode(form.pathList[form.currentPath].Path, true);
+		        AddNode(form.PathList[form.CurrentPath].Path, true);
 
-		        for (var i = form.currentPath + 1; i < form.pathList.Count; i++)
+		        for (var i = form.CurrentPath + 1; i < form.PathList.Count; i++)
 		        {
-			        shortPath = form.pathList[i].Path.Substring(form.pathList[i].Path.LastIndexOf("\\") + 1);
+			        shortPath = form.PathList[i].Path.Substring(form.PathList[i].Path.LastIndexOf("\\") + 1);
 			        if (shortPath == "")
-				        shortPath = form.pathList[i].Path;
+				        shortPath = form.PathList[i].Path;
 
-			        lvi = new ListViewItem(new[] { shortPath, form.pathList[i].FileCount.ToString() });
+			        lvi = new ListViewItem(new[] { shortPath, form.PathList[i].FileCount.ToString() });
 			        form.HistoryList.Items.Add(lvi);
 			        lvi.ImageIndex = 0;
 			        lvi.StateImageIndex = 0;
 		        }
 	        }
 	        else
-		        AddNode(form.pathList[form.currentPath].Path, false);
+		        AddNode(form.PathList[form.CurrentPath].Path, false);
 
-	        form.currentPath = form.pathList.Count - 1;
+	        form.CurrentPath = form.PathList.Count - 1;
 
-	        var dirElems = Directory.GetFiles(form.pathList[form.currentPath].Path);
-	        if (form.pathList[form.currentPath].FileCount > 0)
+	        var dirElems = Directory.GetFiles(form.PathList[form.CurrentPath].Path);
+	        if (form.PathList[form.CurrentPath].FileCount > 0)
 		        form.CurrentImage.ImageLocation = dirElems[0];
 
-	        if (form.pathList[form.pathList.Count - 1].FileCount != 0)
+	        if (form.PathList[form.PathList.Count - 1].FileCount != 0)
 	        {
-		        form.currentPath = form.pathList.Count - 1;
+		        form.CurrentPath = form.PathList.Count - 1;
 		        form.CurrentImage.Visible = true;
 		        form.ButtonLeft.Visible = true;
 		        form.ButtonLeft.Enabled = false;
 		        form.ButtonRight.Visible = true;
 		        form.ImageIndex.Visible = true;
-		        form.ImageIndex.Text = form.pathList[form.currentPath].CurrentIndex.ToString();
-		        form.ButtonRight.Enabled = form.pathList[form.currentPath].FileCount != 1;
+		        form.ImageIndex.Text = form.PathList[form.CurrentPath].CurrentIndex.ToString();
+		        form.ButtonRight.Enabled = form.PathList[form.CurrentPath].FileCount != 1;
 	        }
 	        else
 	        {
@@ -124,7 +124,7 @@ namespace PhotoViewer
                 }
 
                 for (var i = 0; i < folders.Length; i++)
-	                form.pathList.Add(new DirectoryContent(dirs[i].GetFiles().Length, 1, folders[i]));
+	                form.PathList.Add(new DirectoryContent(dirs[i].GetFiles().Length, 1, folders[i]));
             }
             catch (System.UnauthorizedAccessException) { }
         }
