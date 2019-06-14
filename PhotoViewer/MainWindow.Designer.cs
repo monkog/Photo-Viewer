@@ -89,6 +89,7 @@
 			this.TreeView.SelectedImageIndex = 0;
 			this.TreeView.Size = new System.Drawing.Size(262, 380);
 			this.TreeView.TabIndex = 5;
+			this.TreeView.Visible = false;
 			this.TreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeItemSelected);
 			// 
 			// ImageList
@@ -112,6 +113,7 @@
 			// History
 			// 
 			this.History.AutoSize = true;
+			this.History.Checked = true;
 			this.History.Location = new System.Drawing.Point(7, 3);
 			this.History.Name = "History";
 			this.History.Size = new System.Drawing.Size(57, 17);
@@ -172,6 +174,7 @@
 			this.CurrentImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.CurrentImage.TabIndex = 3;
 			this.CurrentImage.TabStop = false;
+			this.CurrentImage.Visible = false;
 			this.CurrentImage.DoubleClick += new System.EventHandler(this.CurrentImageDoubleClick);
 			// 
 			// ImageIndex

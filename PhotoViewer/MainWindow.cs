@@ -16,8 +16,6 @@ namespace PhotoViewer
 		public MainWindow()
 		{
 			InitializeComponent();
-			CurrentImage.Visible = false;
-			History.Checked = true;
 			PathList = new List<DirectoryContent>();
 			HistoryList.SmallImageList = new ImageList();
 			HistoryList.SmallImageList.Images.Add(Resources.imageDir);
