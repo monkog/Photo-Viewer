@@ -1,29 +1,29 @@
 ﻿using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace PhotoViewer
 {
 	public partial class Image : Form
 	{
-		public Image()
+		private readonly FullscreenPicture _picture;
+
+		public Image(int width, int height, string imagePath)
 		{
 			InitializeComponent();
+
+			_picture = new FullscreenPicture(width, height, Close, imagePath) { Owner = this };
+		}
+
+		public Image(int width, int height, Bitmap image)
+		{
+			InitializeComponent();
+
+			_picture = new FullscreenPicture(width, height, Close, image) { Owner = this };
 		}
 
 		private void Loaded(object sender, System.EventArgs e)
 		{
-			var form = Owner as MainWindow;
-			var picture = new FullscreenPicture(form.CurrentImage.Image.Size.Width, form.CurrentImage.Image.Size.Height, Close) { Owner = this };
-
-			var dirElems = Directory.GetFiles(form.pathList[form.currentPath].Path);
-
-			if (form.CurrentImage.Image == form.CurrentImage.ErrorImage)
-				picture.pictureBoxO.Image = Properties.Resources.question;
-			else
-				picture.pictureBoxO.ImageLocation = dirElems[form.pathList[form.currentPath].CurrentIndex - 1];
-
-			picture.Show();
+			_picture.Show();
 		}
 
 		private void OnKeyDown(object sender, KeyEventArgs e)
