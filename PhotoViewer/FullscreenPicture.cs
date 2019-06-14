@@ -7,14 +7,16 @@ namespace PhotoViewer
 {
     public partial class FullscreenPicture : Form
     {
-        public int width;
+	    private readonly Action _closeParent;
+	    public int width;
         public int height;
         private bool mouseDown = false;
         private Point mousePos;
 
-        public FullscreenPicture()
+        public FullscreenPicture(Action closeParent)
         {
-            InitializeComponent();
+	        _closeParent = closeParent;
+	        InitializeComponent();
             pictureBoxO.MouseWheel += new MouseEventHandler(FullscreenPic_MouseWheel);
             pictureBoxO.MouseHover += new EventHandler(pictureBoxO_MouseHover);
             this.MouseWheel += FullscreenPic_MouseWheel;
@@ -23,20 +25,14 @@ namespace PhotoViewer
         }
 
         private void pictureBoxO_DoubleClick(object sender, EventArgs e)
-        {
-            Image form = (Image)Application.OpenForms["Obraz"];
-            form.Close();
-            Close();
-        }
+		{
+			_closeParent();
+		}
 
         private void FullscreenPic_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Escape)
-            {
-                Image form = (Image)Application.OpenForms["Obraz"];
-                form.Close();
-                Close();
-            }
+	        if (e.KeyChar != (char) Keys.Escape) return;
+	        _closeParent();
         }
 
         private void pictureBoxO_MouseDown(object sender, MouseEventArgs e)
@@ -52,12 +48,8 @@ namespace PhotoViewer
 
         private void pictureBoxO_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            if (e.KeyValue == (char)Keys.Escape)
-            {
-                Image form = (Image)Application.OpenForms["Obraz"];
-                form.Close();
-                Close();
-            }
+	        if (e.KeyValue != (char) Keys.Escape) return;
+	        _closeParent();
         }
 
         private void FullscreenPic_MouseWheel(object sender, MouseEventArgs e)

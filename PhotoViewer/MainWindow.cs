@@ -126,7 +126,6 @@ namespace PhotoViewer
                 obraz.FormBorderStyle = FormBorderStyle.None;
                 obraz.TopMost = true;
                 obraz.Visible = false;
-                obraz.draw();
                 obraz.Show();
             }
         }

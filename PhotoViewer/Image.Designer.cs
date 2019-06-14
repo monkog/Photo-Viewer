@@ -28,20 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // Obraz
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(284, 262);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "Obraz";
-            this.Opacity = 0.5D;
-            this.Text = "Obraz";
-            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Obraz_KeyPress);
-            this.ResumeLayout(false);
+			this.SuspendLayout();
+			// 
+			// Image
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.Black;
+			this.ClientSize = new System.Drawing.Size(284, 262);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.Name = "Image";
+			this.Opacity = 0.5D;
+			this.Text = "Obraz";
+			this.Load += new System.EventHandler(this.Loaded);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
+			this.ResumeLayout(false);
 
         }
 

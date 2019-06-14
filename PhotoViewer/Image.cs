@@ -4,47 +4,37 @@ using System.Windows.Forms;
 
 namespace PhotoViewer
 {
-    public partial class Image : Form
-    {
-        public int width;
-        public int height;
-        public int x;
-        public int y;
+	public partial class Image : Form
+	{
+		public Image()
+		{
+			InitializeComponent();
+		}
 
-        public Image()
-        {
-            InitializeComponent();
-        }
+		private void Loaded(object sender, System.EventArgs e)
+		{
+			var form = Owner as MainWindow;
+			var picture = new FullscreenPicture(Close) { Owner = this };
 
-        public void draw()
-        {
-            var form = this.Owner as MainWindow;
-            FullscreenPicture fp = new FullscreenPicture();
-            fp.Owner = this;
-            fp.FormBorderStyle = FormBorderStyle.None;
-            fp.MainMenuStrip = null;
-            fp.ShowInTaskbar = false;
-            fp.TopMost = true;
-            string[] dirElems = Directory.GetFiles(form.pathList[form.currentPath].Path);
+			var dirElems = Directory.GetFiles(form.pathList[form.currentPath].Path);
 
-            if (form.CurrentImage.Image == form.CurrentImage.ErrorImage)
-                fp.pictureBoxO.Image = Properties.Resources.question;
-            else
-                fp.pictureBoxO.ImageLocation = dirElems[form.pathList[form.currentPath].CurrentIndex - 1];
-            
-            fp.Size = new Size(form.CurrentImage.Image.Size.Width, form.CurrentImage.Image.Size.Height);
-            fp.pictureBoxO.Size = new Size(fp.Size.Width, fp.Size.Height);
-            fp.pictureBoxO.Location = new Point(0, 0);
-            fp.width = fp.Size.Width;
-            fp.height = fp.Size.Height;
-            fp.Show();
-        }
+			if (form.CurrentImage.Image == form.CurrentImage.ErrorImage)
+				picture.pictureBoxO.Image = Properties.Resources.question;
+			else
+				picture.pictureBoxO.ImageLocation = dirElems[form.pathList[form.currentPath].CurrentIndex - 1];
 
-        private void Obraz_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            FullscreenPicture form = (FullscreenPicture)Application.OpenForms["FullscreenPic"];
-            form.Close();
-            Close();
-        }
-    }
+			picture.Size = new Size(form.CurrentImage.Image.Size.Width, form.CurrentImage.Image.Size.Height);
+			picture.pictureBoxO.Size = new Size(picture.Size.Width, picture.Size.Height);
+			picture.pictureBoxO.Location = new Point(0, 0);
+			picture.width = picture.Size.Width;
+			picture.height = picture.Size.Height;
+			picture.Show();
+		}
+
+		private void OnKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode != Keys.Escape) return;
+			Close();
+		}
+	}
 }
