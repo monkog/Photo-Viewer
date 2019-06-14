@@ -38,31 +38,27 @@ namespace PhotoViewer
 
 		private void ButtonLeftClick(object sender, MouseEventArgs e)
 		{
-			if (PathList[CurrentPath].CurrentIndex > 1)
-			{
-				PathList[CurrentPath].CurrentIndex--;
-				ImageIndex.Text = PathList[CurrentPath].CurrentIndex.ToString();
-				if (PathList[CurrentPath].CurrentIndex == 1)
-					ButtonLeft.Enabled = false;
-				if (ButtonRight.Enabled == false)
-					ButtonRight.Enabled = true;
+			PathList[CurrentPath].CurrentIndex--;
+			ButtonLeft.Enabled = PathList[CurrentPath].CurrentIndex > 1;
+			ButtonRight.Enabled = true;
 
-				string[] dirElems = Directory.GetFiles(PathList[CurrentPath].Path);
-				CurrentImage.ImageLocation = dirElems[PathList[CurrentPath].CurrentIndex - 1];
-			}
+			UpdateImageAndIndex();
 		}
 
 		private void ButtonRightClick(object sender, MouseEventArgs e)
 		{
 			PathList[CurrentPath].CurrentIndex++;
-			ImageIndex.Text = PathList[CurrentPath].CurrentIndex.ToString();
-			if (ButtonLeft.Enabled == false)
-				ButtonLeft.Enabled = true;
-			if (PathList[CurrentPath].CurrentIndex == PathList[CurrentPath].FileCount)
-				ButtonRight.Enabled = false;
+			ButtonLeft.Enabled = true;
+			ButtonRight.Enabled = PathList[CurrentPath].CurrentIndex != PathList[CurrentPath].FileCount;
 
-			string[] dirElems = Directory.GetFiles(PathList[CurrentPath].Path);
-			CurrentImage.ImageLocation = dirElems[PathList[CurrentPath].CurrentIndex - 1];
+			UpdateImageAndIndex();
+		}
+
+		private void UpdateImageAndIndex()
+		{
+			ImageIndex.Text = PathList[CurrentPath].CurrentIndex.ToString();
+			var files = Directory.GetFiles(PathList[CurrentPath].Path);
+			CurrentImage.ImageLocation = files[PathList[CurrentPath].CurrentIndex - 1];
 		}
 
 		private void HistoryListClicked(object sender, EventArgs e)
