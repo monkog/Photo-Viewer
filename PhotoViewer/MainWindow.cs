@@ -14,7 +14,6 @@ namespace PhotoViewer
 		public MainWindow()
 		{
 			InitializeComponent();
-			MinimizeBox = false;
 			CurrentImage.Visible = false;
 			History.Checked = true;
 			pathList = new List<DirectoryContent>();
@@ -24,12 +23,8 @@ namespace PhotoViewer
 
 		private void BrowseClick(object sender, MouseEventArgs e)
 		{
-			DirectoryPicker wczytaj = new DirectoryPicker();
-			wczytaj.Owner = this;
-			wczytaj.MinimizeBox = false;
-			wczytaj.MaximizeBox = false;
-			wczytaj.ShowInTaskbar = false;
-			wczytaj.ShowDialog();
+			var directoryPicker = new DirectoryPicker { Owner = this };
+			directoryPicker.ShowDialog();
 		}
 
 		private void ButtonLeftClick(object sender, MouseEventArgs e)

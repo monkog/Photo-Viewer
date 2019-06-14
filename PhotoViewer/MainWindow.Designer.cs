@@ -217,6 +217,7 @@
 			this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
 			this.ClientSize = new System.Drawing.Size(804, 434);
 			this.Controls.Add(this.Splitter);
+			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(300, 300);
 			this.Name = "MainWindow";
 			this.Text = "Image viewer";
