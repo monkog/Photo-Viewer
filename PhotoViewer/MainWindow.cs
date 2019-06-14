@@ -121,11 +121,6 @@ namespace PhotoViewer
             {
                 Image obraz = new Image();
                 obraz.Owner = this;
-                obraz.ShowInTaskbar = false;
-                obraz.WindowState = FormWindowState.Maximized;
-                obraz.FormBorderStyle = FormBorderStyle.None;
-                obraz.TopMost = true;
-                obraz.Visible = false;
                 obraz.Show();
             }
         }
