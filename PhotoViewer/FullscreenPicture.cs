@@ -8,21 +8,23 @@ namespace PhotoViewer
     public partial class FullscreenPicture : Form
     {
 	    private readonly Action _closeParent;
-	    public int width;
-        public int height;
-        private bool mouseDown = false;
+        private bool mouseDown;
         private Point mousePos;
 
-        public FullscreenPicture(Action closeParent)
+        public FullscreenPicture(int width, int height, Action closeParent)
         {
 	        _closeParent = closeParent;
 	        InitializeComponent();
-            pictureBoxO.MouseWheel += new MouseEventHandler(FullscreenPic_MouseWheel);
-            pictureBoxO.MouseHover += new EventHandler(pictureBoxO_MouseHover);
-            this.MouseWheel += FullscreenPic_MouseWheel;
-            this.MouseHover += new EventHandler(pictureBoxO_MouseHover);
+            pictureBoxO.MouseWheel += FullscreenPic_MouseWheel;
+            pictureBoxO.MouseHover += pictureBoxO_MouseHover;
+            MouseWheel += FullscreenPic_MouseWheel;
+            MouseHover += pictureBoxO_MouseHover;
             pictureBoxO.Focus();
-        }
+
+            Size = new Size(width, height);
+            pictureBoxO.Size = new Size(Size.Width, Size.Height);
+            pictureBoxO.Location = new Point(0, 0);
+		}
 
         private void pictureBoxO_DoubleClick(object sender, EventArgs e)
 		{
@@ -55,7 +57,7 @@ namespace PhotoViewer
         private void FullscreenPic_MouseWheel(object sender, MouseEventArgs e)
         {
             Size size = pictureBoxO.Size;
-            if (e.Delta > 0 && pictureBoxO.Size.Width < (double)width * 5)
+            if (e.Delta > 0 && pictureBoxO.Size.Width < (double)Size.Width * 5)
             {
                 pictureBoxO.Size = new Size((int)((double)size.Width * 1.1), (int)((double)size.Height * 1.1));
 
@@ -87,7 +89,7 @@ namespace PhotoViewer
                     pictureBoxO.Location = new Point(0, 0);
                 }
             }
-            else if (e.Delta < 0 && pictureBoxO.Size.Width > (double)width * 0.2)
+            else if (e.Delta < 0 && pictureBoxO.Size.Width > (double)Size.Width * 0.2)
             {
                 pictureBoxO.Size = new Size((int)((double)size.Width * 0.9), (int)((double)size.Height * 0.9));
                 if (pictureBoxO.Width > Screen.PrimaryScreen.Bounds.Width)

@@ -14,7 +14,7 @@ namespace PhotoViewer
 		private void Loaded(object sender, System.EventArgs e)
 		{
 			var form = Owner as MainWindow;
-			var picture = new FullscreenPicture(Close) { Owner = this };
+			var picture = new FullscreenPicture(form.CurrentImage.Image.Size.Width, form.CurrentImage.Image.Size.Height, Close) { Owner = this };
 
 			var dirElems = Directory.GetFiles(form.pathList[form.currentPath].Path);
 
@@ -23,11 +23,6 @@ namespace PhotoViewer
 			else
 				picture.pictureBoxO.ImageLocation = dirElems[form.pathList[form.currentPath].CurrentIndex - 1];
 
-			picture.Size = new Size(form.CurrentImage.Image.Size.Width, form.CurrentImage.Image.Size.Height);
-			picture.pictureBoxO.Size = new Size(picture.Size.Width, picture.Size.Height);
-			picture.pictureBoxO.Location = new Point(0, 0);
-			picture.width = picture.Size.Width;
-			picture.height = picture.Size.Height;
 			picture.Show();
 		}
 
