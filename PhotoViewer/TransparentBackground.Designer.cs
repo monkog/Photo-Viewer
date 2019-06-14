@@ -1,6 +1,6 @@
 ﻿namespace PhotoViewer
 {
-    partial class Image
+    partial class TransparentBackground
     {
         /// <summary>
         /// Required designer variable.
@@ -30,17 +30,17 @@
         {
 			this.SuspendLayout();
 			// 
-			// Image
+			// TransparentBackground
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.Black;
 			this.ClientSize = new System.Drawing.Size(284, 262);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			this.Name = "Image";
+			this.Name = "TransparentBackground";
 			this.Opacity = 0.5D;
 			this.ShowInTaskbar = false;
-			this.Text = "Obraz";
+			this.Text = "TransparentBackground";
 			this.TopMost = true;
 			this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
 			this.Load += new System.EventHandler(this.Loaded);

@@ -50,11 +50,11 @@
     <Compile Include="FullscreenPicture.Designer.cs">
       <DependentUpon>FullscreenPicture.cs</DependentUpon>
     </Compile>
-    <Compile Include="Image.cs">
+    <Compile Include="TransparentBackground.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Image.Designer.cs">
-      <DependentUpon>Image.cs</DependentUpon>
+    <Compile Include="TransparentBackground.Designer.cs">
+      <DependentUpon>TransparentBackground.cs</DependentUpon>
     </Compile>
     <Compile Include="DirectoryContent.cs" />
     <Compile Include="MainWindow.cs">
@@ -74,8 +74,8 @@
     <EmbeddedResource Include="FullscreenPicture.resx">
       <DependentUpon>FullscreenPicture.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Image.resx">
-      <DependentUpon>Image.cs</DependentUpon>
+    <EmbeddedResource Include="TransparentBackground.resx">
+      <DependentUpon>TransparentBackground.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>

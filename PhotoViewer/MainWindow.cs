@@ -119,17 +119,17 @@ namespace PhotoViewer
 		private void CurrentImageDoubleClick(object sender, EventArgs e)
 		{
 			if (!CurrentImage.Visible) return;
-			Image image;
+			TransparentBackground image;
 
 			if (CurrentImage.Image == CurrentImage.ErrorImage)
 			{
-				image = new Image(CurrentImage.Image.Size.Width, CurrentImage.Image.Size.Height, Resources.question) { Owner = this };
+				image = new TransparentBackground(CurrentImage.Image.Size.Width, CurrentImage.Image.Size.Height, Resources.question) { Owner = this };
 			}
 			else
 			{
 				var dirElems = Directory.GetFiles(pathList[currentPath].Path);
 				var imagePath = dirElems[pathList[currentPath].CurrentIndex - 1];
-				image = new Image(CurrentImage.Image.Size.Width, CurrentImage.Image.Size.Height, imagePath) { Owner = this };
+				image = new TransparentBackground(CurrentImage.Image.Size.Width, CurrentImage.Image.Size.Height, imagePath) { Owner = this };
 			}
 
 			image.Show();

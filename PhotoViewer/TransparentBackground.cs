@@ -3,18 +3,18 @@ using System.Windows.Forms;
 
 namespace PhotoViewer
 {
-	public partial class Image : Form
+	public partial class TransparentBackground : Form
 	{
 		private readonly FullscreenPicture _picture;
 
-		public Image(int width, int height, string imagePath)
+		public TransparentBackground(int width, int height, string imagePath)
 		{
 			InitializeComponent();
 
 			_picture = new FullscreenPicture(width, height, Close, imagePath) { Owner = this };
 		}
 
-		public Image(int width, int height, Bitmap image)
+		public TransparentBackground(int width, int height, Bitmap image)
 		{
 			InitializeComponent();
 
