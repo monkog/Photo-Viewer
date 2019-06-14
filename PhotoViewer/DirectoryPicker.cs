@@ -34,13 +34,13 @@ namespace PhotoViewer
 	        var form = Owner as MainWindow;
 	        var dir = new DirectoryInfo(DirectoryPath.Text);
 	        form.PathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, DirectoryPath.Text));
-	        form.CurrentPath = form.PathList.Count - 1;
+	        form.SelectedPathIndex = form.PathList.Count - 1;
 
-	        var shortPath = form.PathList[form.CurrentPath].Path.Substring(form.PathList[form.CurrentPath].Path.LastIndexOf("\\") + 1);
+	        var shortPath = form.PathList[form.SelectedPathIndex].Path.Substring(form.PathList[form.SelectedPathIndex].Path.LastIndexOf("\\") + 1);
 	        if (shortPath == "")
-		        shortPath = form.PathList[form.CurrentPath].Path;
+		        shortPath = form.PathList[form.SelectedPathIndex].Path;
 
-	        var lvi = new ListViewItem(new[] {shortPath, form.PathList[form.CurrentPath].FileCount.ToString()})
+	        var lvi = new ListViewItem(new[] {shortPath, form.PathList[form.SelectedPathIndex].FileCount.ToString()})
 	        {
 		        ImageIndex = 0, StateImageIndex = 0
 	        };
@@ -49,9 +49,9 @@ namespace PhotoViewer
 	        if (IncludeSubDirectories.Checked)
 	        {
 		        AddItem(DirectoryPath.Text);
-		        AddNode(form.PathList[form.CurrentPath].Path, true);
+		        AddNode(form.PathList[form.SelectedPathIndex].Path, true);
 
-		        for (var i = form.CurrentPath + 1; i < form.PathList.Count; i++)
+		        for (var i = form.SelectedPathIndex + 1; i < form.PathList.Count; i++)
 		        {
 			        shortPath = form.PathList[i].Path.Substring(form.PathList[i].Path.LastIndexOf("\\") + 1);
 			        if (shortPath == "")
@@ -64,24 +64,24 @@ namespace PhotoViewer
 		        }
 	        }
 	        else
-		        AddNode(form.PathList[form.CurrentPath].Path, false);
+		        AddNode(form.PathList[form.SelectedPathIndex].Path, false);
 
-	        form.CurrentPath = form.PathList.Count - 1;
+	        form.SelectedPathIndex = form.PathList.Count - 1;
 
-	        var dirElems = Directory.GetFiles(form.PathList[form.CurrentPath].Path);
-	        if (form.PathList[form.CurrentPath].FileCount > 0)
+	        var dirElems = Directory.GetFiles(form.PathList[form.SelectedPathIndex].Path);
+	        if (form.PathList[form.SelectedPathIndex].FileCount > 0)
 		        form.CurrentImage.ImageLocation = dirElems[0];
 
 	        if (form.PathList[form.PathList.Count - 1].FileCount != 0)
 	        {
-		        form.CurrentPath = form.PathList.Count - 1;
+		        form.SelectedPathIndex = form.PathList.Count - 1;
 		        form.CurrentImage.Visible = true;
 		        form.ButtonLeft.Visible = true;
 		        form.ButtonLeft.Enabled = false;
 		        form.ButtonRight.Visible = true;
 		        form.ImageIndex.Visible = true;
-		        form.ImageIndex.Text = form.PathList[form.CurrentPath].CurrentIndex.ToString();
-		        form.ButtonRight.Enabled = form.PathList[form.CurrentPath].FileCount != 1;
+		        form.ImageIndex.Text = form.PathList[form.SelectedPathIndex].CurrentIndex.ToString();
+		        form.ButtonRight.Enabled = form.PathList[form.SelectedPathIndex].FileCount != 1;
 	        }
 	        else
 	        {

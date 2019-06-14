@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using PhotoViewer.Properties;
 
@@ -9,7 +10,8 @@ namespace PhotoViewer
 	public partial class MainWindow : Form
 	{
 		public List<DirectoryContent> PathList;
-		public int CurrentPath = -1;
+
+		public int SelectedPathIndex = -1;
 
 		public MainWindow()
 		{
@@ -38,8 +40,8 @@ namespace PhotoViewer
 
 		private void ButtonLeftClick(object sender, MouseEventArgs e)
 		{
-			PathList[CurrentPath].CurrentIndex--;
-			ButtonLeft.Enabled = PathList[CurrentPath].CurrentIndex > 1;
+			PathList[SelectedPathIndex].CurrentIndex--;
+			ButtonLeft.Enabled = PathList[SelectedPathIndex].CurrentIndex > 1;
 			ButtonRight.Enabled = true;
 
 			UpdateImageAndIndex();
@@ -47,18 +49,18 @@ namespace PhotoViewer
 
 		private void ButtonRightClick(object sender, MouseEventArgs e)
 		{
-			PathList[CurrentPath].CurrentIndex++;
+			PathList[SelectedPathIndex].CurrentIndex++;
 			ButtonLeft.Enabled = true;
-			ButtonRight.Enabled = PathList[CurrentPath].CurrentIndex != PathList[CurrentPath].FileCount;
+			ButtonRight.Enabled = PathList[SelectedPathIndex].CurrentIndex != PathList[SelectedPathIndex].FileCount;
 
 			UpdateImageAndIndex();
 		}
 
 		private void UpdateImageAndIndex()
 		{
-			ImageIndex.Text = PathList[CurrentPath].CurrentIndex.ToString();
-			var files = Directory.GetFiles(PathList[CurrentPath].Path);
-			CurrentImage.ImageLocation = files[PathList[CurrentPath].CurrentIndex - 1];
+			ImageIndex.Text = PathList[SelectedPathIndex].CurrentIndex.ToString();
+			var files = Directory.GetFiles(PathList[SelectedPathIndex].Path);
+			CurrentImage.ImageLocation = files[PathList[SelectedPathIndex].CurrentIndex - 1];
 		}
 
 		private void CurrentImageDoubleClick(object sender, EventArgs e)
@@ -72,8 +74,8 @@ namespace PhotoViewer
 			}
 			else
 			{
-				var dirElems = Directory.GetFiles(PathList[CurrentPath].Path);
-				var imagePath = dirElems[PathList[CurrentPath].CurrentIndex - 1];
+				var dirElems = Directory.GetFiles(PathList[SelectedPathIndex].Path);
+				var imagePath = dirElems[PathList[SelectedPathIndex].CurrentIndex - 1];
 				image = new TransparentBackground(CurrentImage.Image.Size.Width, CurrentImage.Image.Size.Height, imagePath) { Owner = this };
 			}
 
@@ -82,28 +84,20 @@ namespace PhotoViewer
 
 		private void HistoryListClicked(object sender, EventArgs e)
 		{
-			CurrentPath = HistoryList.SelectedIndices[0];
+			SelectedPathIndex = HistoryList.SelectedIndices[0];
 			InitializeImageViewer();
 		}
 
 		private void TreeItemSelected(object sender, TreeViewEventArgs e)
 		{
-			var path = e.Node.FullPath;
-			path = path.Substring(0, 3) + path.Substring(4);
-
-			for (var i = 0; i < PathList.Count; i++)
-				if (PathList[i].Path == path)
-				{
-					CurrentPath = i;
-					break;
-				}
-
+			var path = e.Node.FullPath.Replace(@"\\", @"\");
+			SelectedPathIndex = PathList.IndexOf(PathList.Single(p => p.Path == path));
 			InitializeImageViewer();
 		}
 
 		private void InitializeImageViewer()
 		{
-			var hasFiles = PathList[CurrentPath].FileCount > 0;
+			var hasFiles = PathList[SelectedPathIndex].FileCount > 0;
 
 			CurrentImage.Visible = hasFiles;
 			ButtonLeft.Visible = hasFiles;
@@ -112,12 +106,12 @@ namespace PhotoViewer
 
 			if (!hasFiles) return;
 
-			var files = Directory.GetFiles(PathList[CurrentPath].Path);
-			CurrentImage.ImageLocation = files[PathList[CurrentPath].CurrentIndex - 1];
-			ImageIndex.Text = PathList[CurrentPath].CurrentIndex.ToString();
+			var files = Directory.GetFiles(PathList[SelectedPathIndex].Path);
+			CurrentImage.ImageLocation = files[PathList[SelectedPathIndex].CurrentIndex - 1];
+			ImageIndex.Text = PathList[SelectedPathIndex].CurrentIndex.ToString();
 
-			ButtonLeft.Enabled = PathList[CurrentPath].CurrentIndex != 1;
-			ButtonRight.Enabled = PathList[CurrentPath].CurrentIndex != PathList[CurrentPath].FileCount;
+			ButtonLeft.Enabled = PathList[SelectedPathIndex].CurrentIndex != 1;
+			ButtonRight.Enabled = PathList[SelectedPathIndex].CurrentIndex != PathList[SelectedPathIndex].FileCount;
 		}
 	}
 }
