@@ -13,130 +13,121 @@ namespace PhotoViewer
 
 		public FullscreenPicture(int width, int height, Action closeParent, string filePath) : this(width, height, closeParent)
 		{
-			pictureBoxO.ImageLocation = filePath;
+			DisplayedImage.ImageLocation = filePath;
 		}
 
-		public FullscreenPicture(int width, int height, Action closeParent, Bitmap image) : this(width, height, closeParent)
+		public FullscreenPicture(int width, int height, Action closeParent, Image image) : this(width, height, closeParent)
 		{
-			pictureBoxO.Image = image;
+			DisplayedImage.Image = image;
 		}
 
 		private FullscreenPicture(int width, int height, Action closeParent)
 		{
 			_closeParent = closeParent;
 			InitializeComponent();
-			pictureBoxO.MouseWheel += FullscreenPic_MouseWheel;
-			pictureBoxO.MouseHover += pictureBoxO_MouseHover;
-			MouseWheel += FullscreenPic_MouseWheel;
-			MouseHover += pictureBoxO_MouseHover;
-			pictureBoxO.Focus();
 
-			Size = new Size(width, height);
-			pictureBoxO.Size = new Size(Size.Width, Size.Height);
-			pictureBoxO.Location = new Point(0, 0);
+			DisplayedImage.MouseWheel += MouseWheelChanged;
+			MouseWheel += MouseWheelChanged;
+			DisplayedImage.Focus();
+			
+			DisplayedImage.Size = new Size(width, height);
 		}
 
-		private void pictureBoxO_DoubleClick(object sender, EventArgs e)
+		private void DoubleClickOccured(object sender, EventArgs e)
 		{
 			_closeParent();
 		}
 
-		private void FullscreenPic_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (e.KeyChar != (char)Keys.Escape) return;
-			_closeParent();
-		}
-
-		private void pictureBoxO_MouseDown(object sender, MouseEventArgs e)
+		private void MouseDownOccured(object sender, MouseEventArgs e)
 		{
 			_mouseDown = true;
 			_mousePos = MousePosition;
 		}
 
-		private void pictureBoxO_MouseHover(object sender, EventArgs e)
+		private void MouseHoverOccured(object sender, EventArgs e)
 		{
-			pictureBoxO.Focus();
+			DisplayedImage.Focus();
 		}
 
-		private void pictureBoxO_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		private void KeyDownOccured(object sender, PreviewKeyDownEventArgs e)
 		{
 			if (e.KeyValue != (char)Keys.Escape) return;
 			_closeParent();
 		}
 
-		private void FullscreenPic_MouseWheel(object sender, MouseEventArgs e)
+		private void MouseWheelChanged(object sender, MouseEventArgs e)
 		{
-			Size size = pictureBoxO.Size;
-			if (e.Delta > 0 && pictureBoxO.Size.Width < (double)Size.Width * 5)
+			Size size = DisplayedImage.Size;
+			if (e.Delta > 0 && DisplayedImage.Size.Width < (double)Size.Width * 5)
 			{
-				pictureBoxO.Size = new Size((int)(size.Width * 1.1), (int)(size.Height * 1.1));
+				DisplayedImage.Size = new Size((int)(size.Width * 1.1), (int)(size.Height * 1.1));
 
-				if (pictureBoxO.Width > Screen.PrimaryScreen.Bounds.Width)
+				if (DisplayedImage.Width > Screen.PrimaryScreen.Bounds.Width)
 				{
-					if (pictureBoxO.Size.Height > Screen.PrimaryScreen.Bounds.Height)
+					if (DisplayedImage.Size.Height > Screen.PrimaryScreen.Bounds.Height)
 					{
 						Size = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
 						Location = new Point(0, 0);
-						pictureBoxO.Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
+						DisplayedImage.Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
 					}
 					else
 					{
-						Size = new Size(Screen.PrimaryScreen.Bounds.Width, pictureBoxO.Size.Height);
-						Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
-						pictureBoxO.Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, 0);
+						Size = new Size(Screen.PrimaryScreen.Bounds.Width, DisplayedImage.Size.Height);
+						Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
+						DisplayedImage.Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, 0);
 					}
 				}
-				else if (pictureBoxO.Height > Screen.PrimaryScreen.Bounds.Height)
+				else if (DisplayedImage.Height > Screen.PrimaryScreen.Bounds.Height)
 				{
-					Size = new Size(pictureBoxO.Size.Width, Screen.PrimaryScreen.Bounds.Height);
-					Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, 0);
-					pictureBoxO.Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
+					Size = new Size(DisplayedImage.Size.Width, Screen.PrimaryScreen.Bounds.Height);
+					Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, 0);
+					DisplayedImage.Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
 				}
 				else
 				{
-					Size = pictureBoxO.Size;
-					Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
-					pictureBoxO.Location = new Point(0, 0);
+					Size = DisplayedImage.Size;
+					Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
+					DisplayedImage.Location = new Point(0, 0);
 				}
 			}
-			else if (e.Delta < 0 && pictureBoxO.Size.Width > Size.Width * 0.2)
+			else if (e.Delta < 0 && DisplayedImage.Size.Width > Size.Width * 0.2)
 			{
-				pictureBoxO.Size = new Size((int)(size.Width * 0.9), (int)(size.Height * 0.9));
-				if (pictureBoxO.Width > Screen.PrimaryScreen.Bounds.Width)
+				DisplayedImage.Size = new Size((int)(size.Width * 0.9), (int)(size.Height * 0.9));
+				if (DisplayedImage.Width > Screen.PrimaryScreen.Bounds.Width)
 				{
-					if (pictureBoxO.Size.Height > Screen.PrimaryScreen.Bounds.Height)
+					if (DisplayedImage.Size.Height > Screen.PrimaryScreen.Bounds.Height)
 					{
 						Size = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
 						Location = new Point(0, 0);
-						pictureBoxO.Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
+						DisplayedImage.Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
 					}
 					else
 					{
-						Size = new Size(Screen.PrimaryScreen.Bounds.Width, pictureBoxO.Size.Height);
-						Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
-						pictureBoxO.Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, 0);
+						Size = new Size(Screen.PrimaryScreen.Bounds.Width, DisplayedImage.Size.Height);
+						Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
+						DisplayedImage.Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, 0);
 					}
 				}
-				else if (pictureBoxO.Height > Screen.PrimaryScreen.Bounds.Height)
+				else if (DisplayedImage.Height > Screen.PrimaryScreen.Bounds.Height)
 				{
-					Size = new Size(pictureBoxO.Size.Width, Screen.PrimaryScreen.Bounds.Height);
-					Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, 0);
-					pictureBoxO.Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
+					Size = new Size(DisplayedImage.Size.Width, Screen.PrimaryScreen.Bounds.Height);
+					Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, 0);
+					DisplayedImage.Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
 				}
 				else
 				{
-					Size = pictureBoxO.Size;
-					Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
-					pictureBoxO.Location = new Point(0, 0);
+					Size = DisplayedImage.Size;
+					Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
+					DisplayedImage.Location = new Point(0, 0);
 				}
 			}
 		}
 
-		private void pictureBoxO_MouseMove(object sender, MouseEventArgs e)
+		private void MouseMoveOccured(object sender, MouseEventArgs e)
 		{
 			if (_mouseDown)
 			{
-				if (pictureBoxO.Size.Width < Screen.PrimaryScreen.Bounds.Size.Width && pictureBoxO.Size.Height < Screen.PrimaryScreen.Bounds.Size.Height)
+				if (DisplayedImage.Size.Width < Screen.PrimaryScreen.Bounds.Size.Width && DisplayedImage.Size.Height < Screen.PrimaryScreen.Bounds.Size.Height)
 				{
 					int x = Location.X + MousePosition.X - _mousePos.X;
 					int y = Location.Y + MousePosition.Y - _mousePos.Y;
@@ -149,9 +140,9 @@ namespace PhotoViewer
 					else if (y > Screen.PrimaryScreen.Bounds.Height - Size.Height)
 						y = Screen.PrimaryScreen.Bounds.Height - Size.Height;
 					Location = new Point(x, y);
-					pictureBoxO.Location = new Point(0, 0);
+					DisplayedImage.Location = new Point(0, 0);
 				}
-				else if (pictureBoxO.Size.Width < Screen.PrimaryScreen.Bounds.Size.Width)
+				else if (DisplayedImage.Size.Width < Screen.PrimaryScreen.Bounds.Size.Width)
 				{
 					int x = Location.X + MousePosition.X - _mousePos.X;
 					int y = 0;
@@ -161,15 +152,15 @@ namespace PhotoViewer
 						x = Screen.PrimaryScreen.Bounds.Width - Size.Width;
 					Location = new Point(x, y);
 
-					int py = pictureBoxO.Location.Y + MousePosition.Y - _mousePos.Y;
+					int py = DisplayedImage.Location.Y + MousePosition.Y - _mousePos.Y;
 
-					if (py < Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Size.Height)
-						py = Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Size.Height;
+					if (py < Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height)
+						py = Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height;
 					else if (py > 0)
 						py = 0;
-					pictureBoxO.Location = new Point(0, py);
+					DisplayedImage.Location = new Point(0, py);
 				}
-				else if (pictureBoxO.Size.Height < Screen.PrimaryScreen.Bounds.Size.Height)
+				else if (DisplayedImage.Size.Height < Screen.PrimaryScreen.Bounds.Size.Height)
 				{
 					int x = 0;
 					int y = Location.Y + MousePosition.Y - _mousePos.Y;
@@ -179,13 +170,13 @@ namespace PhotoViewer
 						y = Screen.PrimaryScreen.Bounds.Height - Size.Height;
 					Location = new Point(x, y);
 
-					int px = pictureBoxO.Location.X + MousePosition.X - _mousePos.X;
+					int px = DisplayedImage.Location.X + MousePosition.X - _mousePos.X;
 
-					if (px < Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Size.Width)
-						px = Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Size.Width;
+					if (px < Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width)
+						px = Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width;
 					else if (px > 0)
 						px = 0;
-					pictureBoxO.Location = new Point(px, 0);
+					DisplayedImage.Location = new Point(px, 0);
 				}
 				else
 				{
@@ -202,58 +193,58 @@ namespace PhotoViewer
 
 					Location = new Point(x, y);
 
-					int px = pictureBoxO.Location.X + MousePosition.X - _mousePos.X;
-					int py = pictureBoxO.Location.Y + MousePosition.Y - _mousePos.Y;
+					int px = DisplayedImage.Location.X + MousePosition.X - _mousePos.X;
+					int py = DisplayedImage.Location.Y + MousePosition.Y - _mousePos.Y;
 
-					if (py < Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Size.Height)
-						py = Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Size.Height;
+					if (py < Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height)
+						py = Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height;
 					else if (py > 0)
 						py = 0;
 
-					if (px < Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Size.Width)
-						px = Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Size.Width;
+					if (px < Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width)
+						px = Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width;
 					else if (px > 0)
 						px = 0;
 
-					pictureBoxO.Location = new Point(px, py);
+					DisplayedImage.Location = new Point(px, py);
 				}
 				_mousePos = MousePosition;
 			}
 		}
 
-		private void pictureBoxO_MouseUp(object sender, MouseEventArgs e)
+		private void MouseUpOccured(object sender, MouseEventArgs e)
 		{
 			_mouseDown = false;
 		}
 
-		private void pictureBoxO_LoadCompleted(object sender, AsyncCompletedEventArgs e)
+		private void Loaded(object sender, AsyncCompletedEventArgs e)
 		{
-			if (pictureBoxO.Width > Screen.PrimaryScreen.Bounds.Width)
+			if (DisplayedImage.Width > Screen.PrimaryScreen.Bounds.Width)
 			{
-				if (pictureBoxO.Size.Height > Screen.PrimaryScreen.Bounds.Height)
+				if (DisplayedImage.Size.Height > Screen.PrimaryScreen.Bounds.Height)
 				{
 					Size = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
 					Location = new Point(0, 0);
-					pictureBoxO.Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
+					DisplayedImage.Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
 				}
 				else
 				{
-					Size = new Size(Screen.PrimaryScreen.Bounds.Width, pictureBoxO.Size.Height);
-					Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
-					pictureBoxO.Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, 0);
+					Size = new Size(Screen.PrimaryScreen.Bounds.Width, DisplayedImage.Size.Height);
+					Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
+					DisplayedImage.Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, 0);
 				}
 			}
-			else if (pictureBoxO.Height > Screen.PrimaryScreen.Bounds.Height)
+			else if (DisplayedImage.Height > Screen.PrimaryScreen.Bounds.Height)
 			{
-				Size = new Size(pictureBoxO.Size.Width, Screen.PrimaryScreen.Bounds.Height);
-				Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, 0);
-				pictureBoxO.Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
+				Size = new Size(DisplayedImage.Size.Width, Screen.PrimaryScreen.Bounds.Height);
+				Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, 0);
+				DisplayedImage.Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
 			}
 			else
 			{
-				Size = pictureBoxO.Size;
-				Location = new Point((Screen.PrimaryScreen.Bounds.Width - pictureBoxO.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - pictureBoxO.Height) / 2);
-				pictureBoxO.Location = new Point(0, 0);
+				Size = DisplayedImage.Size;
+				Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
+				DisplayedImage.Location = new Point(0, 0);
 			}
 		}
 	}
