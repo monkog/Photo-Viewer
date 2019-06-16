@@ -29,7 +29,7 @@ namespace PhotoViewer
 			DisplayedImage.MouseWheel += MouseWheelChanged;
 			MouseWheel += MouseWheelChanged;
 			DisplayedImage.Focus();
-			
+
 			DisplayedImage.Size = new Size(width, height);
 		}
 
@@ -57,7 +57,7 @@ namespace PhotoViewer
 
 		private void MouseWheelChanged(object sender, MouseEventArgs e)
 		{
-			Size size = DisplayedImage.Size;
+			var size = DisplayedImage.Size;
 			if (e.Delta > 0 && DisplayedImage.Size.Width < (double)Size.Width * 5)
 			{
 				DisplayedImage.Size = new Size((int)(size.Width * 1.1), (int)(size.Height * 1.1));
@@ -125,91 +125,89 @@ namespace PhotoViewer
 
 		private void MouseMoveOccured(object sender, MouseEventArgs e)
 		{
-			if (_mouseDown)
+			if (!_mouseDown) return;
+			if (DisplayedImage.Size.Width < Screen.PrimaryScreen.Bounds.Size.Width && DisplayedImage.Size.Height < Screen.PrimaryScreen.Bounds.Size.Height)
 			{
-				if (DisplayedImage.Size.Width < Screen.PrimaryScreen.Bounds.Size.Width && DisplayedImage.Size.Height < Screen.PrimaryScreen.Bounds.Size.Height)
-				{
-					int x = Location.X + MousePosition.X - _mousePos.X;
-					int y = Location.Y + MousePosition.Y - _mousePos.Y;
-					if (x < 0)
-						x = 0;
-					else if (x > Screen.PrimaryScreen.Bounds.Width - Size.Width)
-						x = Screen.PrimaryScreen.Bounds.Width - Size.Width;
-					if (y < Screen.PrimaryScreen.Bounds.Y)
-						y = 0;
-					else if (y > Screen.PrimaryScreen.Bounds.Height - Size.Height)
-						y = Screen.PrimaryScreen.Bounds.Height - Size.Height;
-					Location = new Point(x, y);
-					DisplayedImage.Location = new Point(0, 0);
-				}
-				else if (DisplayedImage.Size.Width < Screen.PrimaryScreen.Bounds.Size.Width)
-				{
-					int x = Location.X + MousePosition.X - _mousePos.X;
-					int y = 0;
-					if (x < 0)
-						x = 0;
-					else if (x > Screen.PrimaryScreen.Bounds.Width - Size.Width)
-						x = Screen.PrimaryScreen.Bounds.Width - Size.Width;
-					Location = new Point(x, y);
-
-					int py = DisplayedImage.Location.Y + MousePosition.Y - _mousePos.Y;
-
-					if (py < Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height)
-						py = Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height;
-					else if (py > 0)
-						py = 0;
-					DisplayedImage.Location = new Point(0, py);
-				}
-				else if (DisplayedImage.Size.Height < Screen.PrimaryScreen.Bounds.Size.Height)
-				{
-					int x = 0;
-					int y = Location.Y + MousePosition.Y - _mousePos.Y;
-					if (y < 0)
-						y = 0;
-					else if (y > Screen.PrimaryScreen.Bounds.Height - Size.Height)
-						y = Screen.PrimaryScreen.Bounds.Height - Size.Height;
-					Location = new Point(x, y);
-
-					int px = DisplayedImage.Location.X + MousePosition.X - _mousePos.X;
-
-					if (px < Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width)
-						px = Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width;
-					else if (px > 0)
-						px = 0;
-					DisplayedImage.Location = new Point(px, 0);
-				}
-				else
-				{
-					int x = Location.X + MousePosition.X - _mousePos.X;
-					int y = Location.Y + MousePosition.Y - _mousePos.Y;
-					if (x < 0)
-						x = 0;
-					else if (x > Screen.PrimaryScreen.Bounds.Width - Size.Width)
-						x = Screen.PrimaryScreen.Bounds.Width - Size.Width;
-					if (y < 0)
-						y = 0;
-					else if (y > Screen.PrimaryScreen.Bounds.Height - Size.Height)
-						y = Screen.PrimaryScreen.Bounds.Height - Size.Height;
-
-					Location = new Point(x, y);
-
-					int px = DisplayedImage.Location.X + MousePosition.X - _mousePos.X;
-					int py = DisplayedImage.Location.Y + MousePosition.Y - _mousePos.Y;
-
-					if (py < Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height)
-						py = Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height;
-					else if (py > 0)
-						py = 0;
-
-					if (px < Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width)
-						px = Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width;
-					else if (px > 0)
-						px = 0;
-
-					DisplayedImage.Location = new Point(px, py);
-				}
-				_mousePos = MousePosition;
+				var x = Location.X + MousePosition.X - _mousePos.X;
+				var y = Location.Y + MousePosition.Y - _mousePos.Y;
+				if (x < 0)
+					x = 0;
+				else if (x > Screen.PrimaryScreen.Bounds.Width - Size.Width)
+					x = Screen.PrimaryScreen.Bounds.Width - Size.Width;
+				if (y < Screen.PrimaryScreen.Bounds.Y)
+					y = 0;
+				else if (y > Screen.PrimaryScreen.Bounds.Height - Size.Height)
+					y = Screen.PrimaryScreen.Bounds.Height - Size.Height;
+				Location = new Point(x, y);
+				DisplayedImage.Location = new Point(0, 0);
 			}
+			else if (DisplayedImage.Size.Width < Screen.PrimaryScreen.Bounds.Size.Width)
+			{
+				var x = Location.X + MousePosition.X - _mousePos.X;
+				var y = 0;
+				if (x < 0)
+					x = 0;
+				else if (x > Screen.PrimaryScreen.Bounds.Width - Size.Width)
+					x = Screen.PrimaryScreen.Bounds.Width - Size.Width;
+				Location = new Point(x, y);
+
+				int py = DisplayedImage.Location.Y + MousePosition.Y - _mousePos.Y;
+
+				if (py < Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height)
+					py = Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height;
+				else if (py > 0)
+					py = 0;
+				DisplayedImage.Location = new Point(0, py);
+			}
+			else if (DisplayedImage.Size.Height < Screen.PrimaryScreen.Bounds.Size.Height)
+			{
+				var x = 0;
+				var y = Location.Y + MousePosition.Y - _mousePos.Y;
+				if (y < 0)
+					y = 0;
+				else if (y > Screen.PrimaryScreen.Bounds.Height - Size.Height)
+					y = Screen.PrimaryScreen.Bounds.Height - Size.Height;
+				Location = new Point(x, y);
+
+				int px = DisplayedImage.Location.X + MousePosition.X - _mousePos.X;
+
+				if (px < Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width)
+					px = Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width;
+				else if (px > 0)
+					px = 0;
+				DisplayedImage.Location = new Point(px, 0);
+			}
+			else
+			{
+				var x = Location.X + MousePosition.X - _mousePos.X;
+				var y = Location.Y + MousePosition.Y - _mousePos.Y;
+				if (x < 0)
+					x = 0;
+				else if (x > Screen.PrimaryScreen.Bounds.Width - Size.Width)
+					x = Screen.PrimaryScreen.Bounds.Width - Size.Width;
+				if (y < 0)
+					y = 0;
+				else if (y > Screen.PrimaryScreen.Bounds.Height - Size.Height)
+					y = Screen.PrimaryScreen.Bounds.Height - Size.Height;
+
+				Location = new Point(x, y);
+
+				var px = DisplayedImage.Location.X + MousePosition.X - _mousePos.X;
+				var py = DisplayedImage.Location.Y + MousePosition.Y - _mousePos.Y;
+
+				if (py < Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height)
+					py = Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Size.Height;
+				else if (py > 0)
+					py = 0;
+
+				if (px < Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width)
+					px = Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Size.Width;
+				else if (px > 0)
+					px = 0;
+
+				DisplayedImage.Location = new Point(px, py);
+			}
+			_mousePos = MousePosition;
 		}
 
 		private void MouseUpOccured(object sender, MouseEventArgs e)

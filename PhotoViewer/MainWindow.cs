@@ -24,7 +24,11 @@ namespace PhotoViewer
 		private void BrowseClick(object sender, MouseEventArgs e)
 		{
 			var directoryPicker = new DirectoryPicker { Owner = this };
-			directoryPicker.ShowDialog();
+			var result = directoryPicker.ShowDialog();
+			if (result == DialogResult.Cancel) return;
+
+			SelectedPathIndex = PathList.IndexOf(PathList.Last(p => p.FileCount > 0));
+			InitializeImageViewer();
 		}
 
 		private void HistoryCheckedChanged(object sender, EventArgs e)

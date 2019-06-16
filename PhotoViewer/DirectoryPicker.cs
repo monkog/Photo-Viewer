@@ -24,8 +24,9 @@ namespace PhotoViewer
         }
 
         private void CloseClick(object sender, MouseEventArgs e)
-        {
-            Close();
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
         }
 
         private void OkClick(object sender, MouseEventArgs e)
@@ -72,25 +73,7 @@ namespace PhotoViewer
 	        if (form.PathList[form.SelectedPathIndex].FileCount > 0)
 		        form.CurrentImage.ImageLocation = dirElems[0];
 
-	        if (form.PathList[form.PathList.Count - 1].FileCount != 0)
-	        {
-		        form.SelectedPathIndex = form.PathList.Count - 1;
-		        form.CurrentImage.Visible = true;
-		        form.ButtonLeft.Visible = true;
-		        form.ButtonLeft.Enabled = false;
-		        form.ButtonRight.Visible = true;
-		        form.ImageIndex.Visible = true;
-		        form.ImageIndex.Text = form.PathList[form.SelectedPathIndex].CurrentIndex.ToString();
-		        form.ButtonRight.Enabled = form.PathList[form.SelectedPathIndex].FileCount != 1;
-	        }
-	        else
-	        {
-		        form.ButtonLeft.Visible = false;
-		        form.ButtonRight.Visible = false;
-		        form.ImageIndex.Visible = false;
-		        form.CurrentImage.Visible = false;
-	        }
-
+	        DialogResult = DialogResult.OK;
 	        Close();
         }
 
