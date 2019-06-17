@@ -1,256 +1,269 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using PhotoViewer.Properties;
 
 namespace PhotoViewer
 {
-    public partial class DirectoryPicker : Form
-    {
-        public DirectoryPicker()
-        {
-            InitializeComponent();
-        }
+	public partial class DirectoryPicker : Form
+	{
+		public DirectoryPicker()
+		{
+			InitializeComponent();
+		}
 
-        private void BrowseClick(object sender, MouseEventArgs e)
-        {
-	        using (var folderBrowserDialog = new FolderBrowserDialog())
-	        {
-		        folderBrowserDialog.ShowDialog();
-		        if (string.IsNullOrEmpty(folderBrowserDialog.SelectedPath)) return;
-				
-		        DirectoryPath.Text = folderBrowserDialog.SelectedPath;
-	        }
-        }
+		private void BrowseClick(object sender, MouseEventArgs e)
+		{
+			using (var folderBrowserDialog = new FolderBrowserDialog())
+			{
+				folderBrowserDialog.ShowDialog();
+				if (string.IsNullOrEmpty(folderBrowserDialog.SelectedPath)) return;
 
-        private void CloseClick(object sender, MouseEventArgs e)
+				DirectoryPath.Text = folderBrowserDialog.SelectedPath;
+			}
+		}
+
+		private void CloseClick(object sender, MouseEventArgs e)
 		{
 			DialogResult = DialogResult.Cancel;
 			Close();
-        }
+		}
 
-        private void OkClick(object sender, MouseEventArgs e)
-        {
-	        if (!ValidateChildren()) return;
-	        var form = Owner as MainWindow;
-	        var dir = new DirectoryInfo(DirectoryPath.Text);
-	        form.PathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, DirectoryPath.Text));
-	        form.SelectedPathIndex = form.PathList.Count - 1;
+		private void OkClick(object sender, MouseEventArgs e)
+		{
+			if (!ValidateChildren()) return;
+			var form = Owner as MainWindow;
+			var dir = new DirectoryInfo(DirectoryPath.Text);
+			form.PathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, DirectoryPath.Text));
+			form.SelectedPathIndex = form.PathList.Count - 1;
 
-	        var shortPath = form.PathList[form.SelectedPathIndex].Path.Substring(form.PathList[form.SelectedPathIndex].Path.LastIndexOf("\\") + 1);
-	        if (shortPath == "")
-		        shortPath = form.PathList[form.SelectedPathIndex].Path;
+			var shortPath = form.PathList[form.SelectedPathIndex].Path.Substring(form.PathList[form.SelectedPathIndex].Path.LastIndexOf("\\") + 1);
+			if (shortPath == "")
+				shortPath = form.PathList[form.SelectedPathIndex].Path;
 
-	        var lvi = new ListViewItem(new[] {shortPath, form.PathList[form.SelectedPathIndex].FileCount.ToString()})
-	        {
-		        ImageIndex = 0, StateImageIndex = 0
-	        };
-	        form.HistoryList.Items.Add(lvi);
+			var lvi = new ListViewItem(new[] { shortPath, form.PathList[form.SelectedPathIndex].FileCount.ToString() })
+			{
+				ImageIndex = 0,
+				StateImageIndex = 0
+			};
+			form.HistoryList.Items.Add(lvi);
 
-	        if (IncludeSubDirectories.Checked)
-	        {
-		        AddItem(DirectoryPath.Text);
-		        AddNode(form.PathList[form.SelectedPathIndex].Path, true);
+			if (IncludeSubDirectories.Checked)
+			{
+				AddSubdirectories(DirectoryPath.Text);
+				AddNode(form.PathList[form.SelectedPathIndex].Path, true);
 
-		        for (var i = form.SelectedPathIndex + 1; i < form.PathList.Count; i++)
-		        {
-			        shortPath = form.PathList[i].Path.Substring(form.PathList[i].Path.LastIndexOf("\\") + 1);
-			        if (shortPath == "")
-				        shortPath = form.PathList[i].Path;
+				for (var i = form.SelectedPathIndex + 1; i < form.PathList.Count; i++)
+				{
+					shortPath = form.PathList[i].Path.Substring(form.PathList[i].Path.LastIndexOf("\\") + 1);
+					if (shortPath == "")
+						shortPath = form.PathList[i].Path;
 
-			        lvi = new ListViewItem(new[] { shortPath, form.PathList[i].FileCount.ToString() });
-			        form.HistoryList.Items.Add(lvi);
-			        lvi.ImageIndex = 0;
-			        lvi.StateImageIndex = 0;
-		        }
-	        }
-	        else
-		        AddNode(form.PathList[form.SelectedPathIndex].Path, false);
+					lvi = new ListViewItem(new[] { shortPath, form.PathList[i].FileCount.ToString() });
+					form.HistoryList.Items.Add(lvi);
+					lvi.ImageIndex = 0;
+					lvi.StateImageIndex = 0;
+				}
+			}
+			else
+				AddNode(form.PathList[form.SelectedPathIndex].Path, false);
 
-	        form.SelectedPathIndex = form.PathList.Count - 1;
+			form.SelectedPathIndex = form.PathList.Count - 1;
 
-	        var dirElems = Directory.GetFiles(form.PathList[form.SelectedPathIndex].Path);
-	        if (form.PathList[form.SelectedPathIndex].FileCount > 0)
-		        form.CurrentImage.ImageLocation = dirElems[0];
+			var dirElems = Directory.GetFiles(form.PathList[form.SelectedPathIndex].Path);
+			if (form.PathList[form.SelectedPathIndex].FileCount > 0)
+				form.CurrentImage.ImageLocation = dirElems[0];
 
-	        DialogResult = DialogResult.OK;
-	        Close();
-        }
+			DialogResult = DialogResult.OK;
+			Close();
+		}
 
-        private void PathValidating(object sender, CancelEventArgs e)
-        {
-            if (DirectoryPath.Text.Length == 0)
-            {
-                errorProvider.SetError(DirectoryPath, Resources.ProvideDirectoryPath);
-                e.Cancel = true;
-                return;
-            }
+		private void PathValidating(object sender, CancelEventArgs e)
+		{
+			if (DirectoryPath.Text.Length == 0)
+			{
+				errorProvider.SetError(DirectoryPath, Resources.ProvideDirectoryPath);
+				e.Cancel = true;
+				return;
+			}
 
-            errorProvider.Clear();
-            e.Cancel = false;
-        }
+			errorProvider.Clear();
+			e.Cancel = false;
+		}
 
-        private void AddItem(string path)
-        {
-            try
-            {
-                var form = Owner as MainWindow;
-                var folders = Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly);
+		private void AddSubdirectories(string path)
+		{
+			var form = Owner as MainWindow;
+			var folders = new Dictionary<string, DirectoryInfo>();
+			var foldersToAdd = new List<string> { path };
 
-                if (folders.Length == 0) return;
-                var dirs = new DirectoryInfo[folders.Length];
+			while (foldersToAdd.Any())
+			{
+				var rootFolder = foldersToAdd.First();
+				foldersToAdd.RemoveAt(0);
+				string[] childFolders = { };
 
-                for (var i = 0; i < folders.Length; i++)
-                {
-	                dirs[i] = new DirectoryInfo(folders[i]);
-	                AddItem(dirs[i].ToString());
-                }
+				try
+				{
+					childFolders = Directory.GetDirectories(rootFolder, "*", SearchOption.TopDirectoryOnly);
+				}
+				catch (UnauthorizedAccessException) { }
 
-                for (var i = 0; i < folders.Length; i++)
-	                form.PathList.Add(new DirectoryContent(dirs[i].GetFiles().Length, 1, folders[i]));
-            }
-            catch (System.UnauthorizedAccessException) { }
-        }
+				if (!childFolders.Any()) continue;
+				foldersToAdd.AddRange(childFolders);
 
-        private static void AddSubs(TreeNode node, string path)
-        {
-            var folders = Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly);
-            var shortFolders = new string[folders.Length];
+				foreach (var folder in childFolders)
+					folders.Add(folder, new DirectoryInfo(folder));
+			}
 
-            for (var i = 0; i < folders.Length; i++)
-            {
-                shortFolders[i] = folders[i].Substring(folders[i].LastIndexOf("\\") + 1);
-                var exists = false;
+			foreach (var folder in folders)
+			{
+				form.PathList.Add(new DirectoryContent(folder.Value.GetFiles().Length, 1, folder.Key));
+			}
+		}
 
-                foreach (TreeNode tn in node.Nodes)
-                    if (tn.Text == shortFolders[i])
-                        exists = true;
+		private static void AddSubs(TreeNode node, string path)
+		{
+			var folders = Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly);
+			var shortFolders = new string[folders.Length];
 
-                if (exists == false)
-                    node.Nodes.Add(shortFolders[i]);
-            }
+			for (var i = 0; i < folders.Length; i++)
+			{
+				shortFolders[i] = folders[i].Substring(folders[i].LastIndexOf("\\") + 1);
+				var exists = false;
 
-            var j = 0;
-            if (folders.Length != 0)
-            {
-                foreach (TreeNode tn in node.Nodes)
-                {
-                    tn.ImageIndex = 1;
-                    tn.SelectedImageIndex = 1;
-                    AddSubs(tn, folders[j++]);
-                }
-            }
-            node.ExpandAll();
-        }
+				foreach (TreeNode tn in node.Nodes)
+					if (tn.Text == shortFolders[i])
+						exists = true;
 
-        private void AddNode(string path, bool subdirectories)
-        {
-            var form = Owner as MainWindow;
-            var paths = path.Split('\\');
-            paths[0] = path.Substring(0, 3);
+				if (exists == false)
+					node.Nodes.Add(shortFolders[i]);
+			}
 
-            if (subdirectories)
-            {
-                AddNode(path, false);
+			var j = 0;
+			if (folders.Length != 0)
+			{
+				foreach (TreeNode tn in node.Nodes)
+				{
+					tn.ImageIndex = 1;
+					tn.SelectedImageIndex = 1;
+					AddSubs(tn, folders[j++]);
+				}
+			}
+			node.ExpandAll();
+		}
 
-                TreeNode root = null;
-                foreach (TreeNode tn in form.TreeView.Nodes)
-                    if (tn.Text == paths[0])
-                    {
-                        root = tn;
-                        break;
-                    }
+		private void AddNode(string path, bool subdirectories)
+		{
+			var form = Owner as MainWindow;
+			var paths = path.Split('\\');
+			paths[0] = path.Substring(0, 3);
 
-                var i = 0;
-                while (root.Text != paths[paths.Length - 1])
-                    foreach (TreeNode tn in root.Nodes)
-                        if (tn.Text == paths[i++])
-                            root = tn;
+			if (subdirectories)
+			{
+				AddNode(path, false);
 
-                AddSubs(root, path);
-            }
-            else
-            {
-                var exists = false;
+				TreeNode root = null;
+				foreach (TreeNode tn in form.TreeView.Nodes)
+					if (tn.Text == paths[0])
+					{
+						root = tn;
+						break;
+					}
 
-                foreach (TreeNode node in form.TreeView.Nodes)
-                {
-	                if (node.Text != paths[0]) continue;
-	                exists = true;
-                    break;
-                }
+				var i = 0;
+				while (root.Text != paths[paths.Length - 1])
+					foreach (TreeNode tn in root.Nodes)
+						if (tn.Text == paths[i++])
+							root = tn;
 
-                if (exists)
-                {
-                    TreeNode root = null;
-                    foreach (TreeNode tn in form.TreeView.Nodes)
-                        if (tn.Text == paths[0])
-                        {
-                            root = tn;
-                            break;
-                        }
+				AddSubs(root, path);
+			}
+			else
+			{
+				var exists = false;
 
-                    var pathExists = true;
-                    var i = 1;
+				foreach (TreeNode node in form.TreeView.Nodes)
+				{
+					if (node.Text != paths[0]) continue;
+					exists = true;
+					break;
+				}
 
-                    for (i = 1; i < paths.Length && pathExists; i++)
-                    {
-                        pathExists = false;
-                        foreach (TreeNode node in root.Nodes)
-                            if (node.Text == paths[i])
-                            {
-                                root = node;
-                                pathExists = true;
-                            }
-                    }
+				if (exists)
+				{
+					TreeNode root = null;
+					foreach (TreeNode tn in form.TreeView.Nodes)
+						if (tn.Text == paths[0])
+						{
+							root = tn;
+							break;
+						}
 
-                    if (pathExists) return;
-                    {
-	                    i--;
-	                    for (; i < paths.Length; i++)
-	                    {
-		                    var tn = new TreeNode(paths[i]);
-		                    root.Nodes.Add(tn);
-		                    root = tn;
-		                    root.Expand();
-		                    if (i != paths.Length - 1)
-		                    {
-			                    tn.ImageIndex = 0;
-			                    tn.SelectedImageIndex = 0;
-		                    }
-		                    else
-		                    {
-			                    tn.ImageIndex = 1;
-			                    tn.SelectedImageIndex = 1;
-		                    }
-	                    }
-                    }
-                }
-                else
-                {
-                    var root = form.TreeView.Nodes.Add(paths[0]);
-                    var defRoot = root;
+					var pathExists = true;
+					var i = 1;
 
-                    for (var i = 1; i < paths.Length; i++)
-                    {
-                        var tn = new TreeNode(paths[i]);
-                        root.Nodes.Add(tn);
-                        root = tn;
-                        root.Expand();
-                        if (i != paths.Length - 1)
-                        {
-                            tn.ImageIndex = 0;
-                            tn.SelectedImageIndex = 0;
-                        }
-                        else
-                        {
-                            tn.ImageIndex = 1;
-                            tn.SelectedImageIndex = 1;
-                        }
-                    }
-                    defRoot.ExpandAll();
-                }
-            }
-        }
-    }
+					for (i = 1; i < paths.Length && pathExists; i++)
+					{
+						pathExists = false;
+						foreach (TreeNode node in root.Nodes)
+							if (node.Text == paths[i])
+							{
+								root = node;
+								pathExists = true;
+							}
+					}
+
+					if (pathExists) return;
+					{
+						i--;
+						for (; i < paths.Length; i++)
+						{
+							var tn = new TreeNode(paths[i]);
+							root.Nodes.Add(tn);
+							root = tn;
+							root.Expand();
+							if (i != paths.Length - 1)
+							{
+								tn.ImageIndex = 0;
+								tn.SelectedImageIndex = 0;
+							}
+							else
+							{
+								tn.ImageIndex = 1;
+								tn.SelectedImageIndex = 1;
+							}
+						}
+					}
+				}
+				else
+				{
+					var root = form.TreeView.Nodes.Add(paths[0]);
+					var defRoot = root;
+
+					for (var i = 1; i < paths.Length; i++)
+					{
+						var tn = new TreeNode(paths[i]);
+						root.Nodes.Add(tn);
+						root = tn;
+						root.Expand();
+						if (i != paths.Length - 1)
+						{
+							tn.ImageIndex = 0;
+							tn.SelectedImageIndex = 0;
+						}
+						else
+						{
+							tn.ImageIndex = 1;
+							tn.SelectedImageIndex = 1;
+						}
+					}
+					defRoot.ExpandAll();
+				}
+			}
+		}
+	}
 }
