@@ -36,8 +36,14 @@ namespace PhotoViewer
 		{
 			if (!ValidateChildren()) return;
 			var form = Owner as MainWindow;
+
 			var dir = new DirectoryInfo(DirectoryPath.Text);
-			form.PathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, DirectoryPath.Text));
+
+			if (!form.PathList.Any(c => c.Path == DirectoryPath.Text))
+			{
+				form.PathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, DirectoryPath.Text));
+			}
+
 			form.SelectedPathIndex = form.PathList.Count - 1;
 
 			var shortPath = form.PathList[form.SelectedPathIndex].Path.Substring(form.PathList[form.SelectedPathIndex].Path.LastIndexOf("\\") + 1);
@@ -54,7 +60,7 @@ namespace PhotoViewer
 			if (IncludeSubDirectories.Checked)
 			{
 				AddSubdirectories(DirectoryPath.Text);
-				AddNode(form.PathList[form.SelectedPathIndex].Path, true);
+				CreateTreeForPath(form.TreeView, form.PathList[form.SelectedPathIndex].Path, true);
 
 				for (var i = form.SelectedPathIndex + 1; i < form.PathList.Count; i++)
 				{
@@ -68,8 +74,7 @@ namespace PhotoViewer
 					lvi.StateImageIndex = 0;
 				}
 			}
-			else
-				AddNode(form.PathList[form.SelectedPathIndex].Path, false);
+			else CreateTreeForPath(form.TreeView, form.PathList[form.SelectedPathIndex].Path, false);
 
 			form.SelectedPathIndex = form.PathList.Count - 1;
 
@@ -121,149 +126,105 @@ namespace PhotoViewer
 
 			foreach (var folder in folders)
 			{
+				if (form.PathList.Any(p => p.Path == folder.Key)) continue;
 				form.PathList.Add(new DirectoryContent(folder.Value.GetFiles().Length, 1, folder.Key));
 			}
 		}
 
-		private static void AddSubs(TreeNode node, string path)
+		private static void CreateTreeForPath(TreeView tree, string path, bool includeSubdirectories)
 		{
-			var folders = Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly);
-			var shortFolders = new string[folders.Length];
+			var paths = path.Split('\\');
+			var rootExists = false;
 
-			for (var i = 0; i < folders.Length; i++)
+			foreach (TreeNode node in tree.Nodes)
 			{
-				shortFolders[i] = folders[i].Substring(folders[i].LastIndexOf("\\") + 1);
-				var exists = false;
-
-				foreach (TreeNode tn in node.Nodes)
-					if (tn.Text == shortFolders[i])
-						exists = true;
-
-				if (exists == false)
-					node.Nodes.Add(shortFolders[i]);
+				if (node.Text != paths[0]) continue;
+				rootExists = true;
+				break;
 			}
 
-			var j = 0;
-			if (folders.Length != 0)
+			if (!rootExists) tree.Nodes.Add(paths[0]);
+
+			var foldersToAdd = new List<string> { path };
+
+			while (foldersToAdd.Any())
 			{
-				foreach (TreeNode tn in node.Nodes)
+				var rootFolder = foldersToAdd.First();
+				foldersToAdd.RemoveAt(0);
+				var parentNode = FindParentNode(tree, rootFolder);
+
+				if (includeSubdirectories)
 				{
-					tn.ImageIndex = 1;
-					tn.SelectedImageIndex = 1;
-					AddSubs(tn, folders[j++]);
+					try
+					{
+						var availableFolders = Directory.GetDirectories(rootFolder, "*", SearchOption.TopDirectoryOnly);
+						foldersToAdd.AddRange(availableFolders);
+					}
+					catch (UnauthorizedAccessException) { /* ignored*/ }
 				}
+
+				CreateTreeNode(rootFolder, parentNode);
 			}
-			node.ExpandAll();
+
+			tree.ExpandAll();
 		}
 
-		private void AddNode(string path, bool subdirectories)
+		private static void CreateTreeNode(string rootFolder, TreeNode parentNode)
 		{
-			var form = Owner as MainWindow;
-			var paths = path.Split('\\');
-			paths[0] = path.Substring(0, 3);
+			var parentFolders = rootFolder.Split('\\').ToList();
+			parentFolders = parentFolders.Skip(parentFolders.IndexOf(parentFolders.Single(f => f == parentNode.Text)) + 1).ToList();
 
-			if (subdirectories)
+			foreach (var folder in parentFolders)
 			{
-				AddNode(path, false);
-
-				TreeNode root = null;
-				foreach (TreeNode tn in form.TreeView.Nodes)
-					if (tn.Text == paths[0])
+				var isTargetNode = folder == parentFolders.Last();
+				if (isTargetNode)
+				{
+					var exists = false;
+					TreeNode foundNode = null;
+					foreach (TreeNode node in parentNode.Nodes)
 					{
-						root = tn;
-						break;
+						if (node.Text != folder) continue;
+						exists = true;
+						foundNode = node;
 					}
 
-				var i = 0;
-				while (root.Text != paths[paths.Length - 1])
-					foreach (TreeNode tn in root.Nodes)
-						if (tn.Text == paths[i++])
-							root = tn;
+					if (exists)
+					{
+						foundNode.ImageIndex = 1;
+						continue;
+					}
+				}
 
-				AddSubs(root, path);
+				var newNode = parentNode.Nodes.Add(folder);
+				newNode.ImageIndex = isTargetNode ? 1 : 0;
+				parentNode = newNode;
 			}
-			else
-			{
-				var exists = false;
+		}
 
-				foreach (TreeNode node in form.TreeView.Nodes)
+		private static TreeNode FindParentNode(TreeView tree, string folder)
+		{
+			var folders = folder.Split('\\');
+			var parentPathFolders = folders.Take(folders.Length - 1);
+			TreeNode parentNode = null;
+
+			foreach (TreeNode node in tree.Nodes)
+			{
+				if (node.Text != folders[0]) continue;
+				parentNode = node;
+				break;
+			}
+
+			foreach (var parent in parentPathFolders)
+			{
+				foreach (TreeNode node in parentNode.Nodes)
 				{
-					if (node.Text != paths[0]) continue;
-					exists = true;
+					if (node.Text != parent) continue;
+					parentNode = node;
 					break;
 				}
-
-				if (exists)
-				{
-					TreeNode root = null;
-					foreach (TreeNode tn in form.TreeView.Nodes)
-						if (tn.Text == paths[0])
-						{
-							root = tn;
-							break;
-						}
-
-					var pathExists = true;
-					var i = 1;
-
-					for (i = 1; i < paths.Length && pathExists; i++)
-					{
-						pathExists = false;
-						foreach (TreeNode node in root.Nodes)
-							if (node.Text == paths[i])
-							{
-								root = node;
-								pathExists = true;
-							}
-					}
-
-					if (pathExists) return;
-					{
-						i--;
-						for (; i < paths.Length; i++)
-						{
-							var tn = new TreeNode(paths[i]);
-							root.Nodes.Add(tn);
-							root = tn;
-							root.Expand();
-							if (i != paths.Length - 1)
-							{
-								tn.ImageIndex = 0;
-								tn.SelectedImageIndex = 0;
-							}
-							else
-							{
-								tn.ImageIndex = 1;
-								tn.SelectedImageIndex = 1;
-							}
-						}
-					}
-				}
-				else
-				{
-					var root = form.TreeView.Nodes.Add(paths[0]);
-					var defRoot = root;
-
-					for (var i = 1; i < paths.Length; i++)
-					{
-						var tn = new TreeNode(paths[i]);
-						root.Nodes.Add(tn);
-						root = tn;
-						root.Expand();
-						if (i != paths.Length - 1)
-						{
-							tn.ImageIndex = 0;
-							tn.SelectedImageIndex = 0;
-						}
-						else
-						{
-							tn.ImageIndex = 1;
-							tn.SelectedImageIndex = 1;
-						}
-					}
-					defRoot.ExpandAll();
-				}
 			}
+
+			return parentNode;
 		}
 	}
 }

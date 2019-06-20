@@ -27,7 +27,7 @@ namespace PhotoViewer
 			var result = directoryPicker.ShowDialog();
 			if (result == DialogResult.Cancel) return;
 
-			SelectedPathIndex = PathList.IndexOf(PathList.Last(p => p.FileCount > 0));
+			SelectedPathIndex = PathList.IndexOf(PathList.LastOrDefault(p => p.FileCount > 0));
 			InitializeImageViewer();
 		}
 
@@ -93,13 +93,13 @@ namespace PhotoViewer
 		private void TreeItemSelected(object sender, TreeViewEventArgs e)
 		{
 			var path = e.Node.FullPath.Replace(@"\\", @"\");
-			SelectedPathIndex = PathList.IndexOf(PathList.Single(p => p.Path == path));
+			SelectedPathIndex = PathList.IndexOf(PathList.SingleOrDefault(p => p.Path == path));
 			InitializeImageViewer();
 		}
 
 		private void InitializeImageViewer()
 		{
-			var hasFiles = PathList[SelectedPathIndex].FileCount > 0;
+			var hasFiles = SelectedPathIndex != -1 && PathList[SelectedPathIndex].FileCount > 0;
 
 			CurrentImage.Visible = hasFiles;
 			ButtonLeft.Visible = hasFiles;
