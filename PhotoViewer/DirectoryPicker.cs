@@ -37,20 +37,21 @@ namespace PhotoViewer
 			if (!ValidateChildren()) return;
 			var form = Owner as MainWindow;
 
-			var dir = new DirectoryInfo(DirectoryPath.Text);
+			var directoryInfo = new DirectoryInfo(DirectoryPath.Text);
 
 			if (!form.PathList.Any(c => c.Path == DirectoryPath.Text))
 			{
-				form.PathList.Add(new DirectoryContent(dir.GetFiles().Length, 1, DirectoryPath.Text));
+				try
+				{
+					form.PathList.Add(new DirectoryContent(directoryInfo.GetFiles().Length, 1, DirectoryPath.Text));
+				}
+				catch (UnauthorizedAccessException) { /* ignored */ }
 			}
 
 			form.SelectedPathIndex = form.PathList.Count - 1;
-
-			var shortPath = form.PathList[form.SelectedPathIndex].Path.Substring(form.PathList[form.SelectedPathIndex].Path.LastIndexOf("\\") + 1);
-			if (shortPath == "")
-				shortPath = form.PathList[form.SelectedPathIndex].Path;
-
-			var lvi = new ListViewItem(new[] { shortPath, form.PathList[form.SelectedPathIndex].FileCount.ToString() })
+			var selectedDirectory = form.PathList.Last();
+			
+			var lvi = new ListViewItem(new[] { selectedDirectory.DirectoryName, selectedDirectory.FileCount.ToString() })
 			{
 				ImageIndex = 0,
 				StateImageIndex = 0
@@ -60,13 +61,12 @@ namespace PhotoViewer
 			if (IncludeSubDirectories.Checked)
 			{
 				AddSubdirectories(DirectoryPath.Text);
-				CreateTreeForPath(form.TreeView, form.PathList[form.SelectedPathIndex].Path, true);
+				CreateTreeForPath(form.TreeView, selectedDirectory.Path, true);
 
 				for (var i = form.SelectedPathIndex + 1; i < form.PathList.Count; i++)
 				{
-					shortPath = form.PathList[i].Path.Substring(form.PathList[i].Path.LastIndexOf("\\") + 1);
-					if (shortPath == "")
-						shortPath = form.PathList[i].Path;
+					var shortPath = form.PathList[i].Path.Substring(form.PathList[i].Path.LastIndexOf("\\") + 1);
+					if (shortPath == string.Empty) shortPath = form.PathList[i].Path;
 
 					lvi = new ListViewItem(new[] { shortPath, form.PathList[i].FileCount.ToString() });
 					form.HistoryList.Items.Add(lvi);
@@ -74,13 +74,12 @@ namespace PhotoViewer
 					lvi.StateImageIndex = 0;
 				}
 			}
-			else CreateTreeForPath(form.TreeView, form.PathList[form.SelectedPathIndex].Path, false);
+			else CreateTreeForPath(form.TreeView, selectedDirectory.Path, false);
 
 			form.SelectedPathIndex = form.PathList.Count - 1;
 
-			var dirElems = Directory.GetFiles(form.PathList[form.SelectedPathIndex].Path);
-			if (form.PathList[form.SelectedPathIndex].FileCount > 0)
-				form.CurrentImage.ImageLocation = dirElems[0];
+			var dirElems = Directory.GetFiles(selectedDirectory.Path);
+			if (selectedDirectory.FileCount > 0) form.CurrentImage.ImageLocation = dirElems[0];
 
 			DialogResult = DialogResult.OK;
 			Close();
@@ -115,7 +114,7 @@ namespace PhotoViewer
 				{
 					childFolders = Directory.GetDirectories(rootFolder, "*", SearchOption.TopDirectoryOnly);
 				}
-				catch (UnauthorizedAccessException) { }
+				catch (UnauthorizedAccessException) { /* ignored */ }
 
 				if (!childFolders.Any()) continue;
 				foldersToAdd.AddRange(childFolders);
@@ -127,7 +126,11 @@ namespace PhotoViewer
 			foreach (var folder in folders)
 			{
 				if (form.PathList.Any(p => p.Path == folder.Key)) continue;
-				form.PathList.Add(new DirectoryContent(folder.Value.GetFiles().Length, 1, folder.Key));
+				try
+				{
+					form.PathList.Add(new DirectoryContent(folder.Value.GetFiles().Length, 1, folder.Key));
+				}
+				catch (UnauthorizedAccessException) { /* ignored */ }
 			}
 		}
 
@@ -191,12 +194,14 @@ namespace PhotoViewer
 					if (exists)
 					{
 						foundNode.ImageIndex = 1;
+						foundNode.SelectedImageIndex = 1;
 						continue;
 					}
 				}
 
 				var newNode = parentNode.Nodes.Add(folder);
 				newNode.ImageIndex = isTargetNode ? 1 : 0;
+				newNode.SelectedImageIndex = isTargetNode ? 1 : 0;
 				parentNode = newNode;
 			}
 		}
