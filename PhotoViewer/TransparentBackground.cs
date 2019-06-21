@@ -14,7 +14,7 @@ namespace PhotoViewer
 			_picture = new FullscreenPicture(width, height, Close, imagePath) { Owner = this };
 		}
 
-		public TransparentBackground(int width, int height, Bitmap image)
+		public TransparentBackground(int width, int height, Image image)
 		{
 			InitializeComponent();
 

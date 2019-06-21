@@ -42,7 +42,6 @@
 			this.DisplayedImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.DisplayedImage.TabIndex = 0;
 			this.DisplayedImage.TabStop = false;
-			this.DisplayedImage.LoadCompleted += new System.ComponentModel.AsyncCompletedEventHandler(this.Loaded);
 			this.DisplayedImage.DoubleClick += new System.EventHandler(this.DoubleClickOccured);
 			this.DisplayedImage.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MouseDownOccured);
 			this.DisplayedImage.MouseHover += new System.EventHandler(this.MouseHoverOccured);
