@@ -31,7 +31,7 @@
 			this.components = new System.ComponentModel.Container();
 			this.AddFilesLabel = new System.Windows.Forms.Label();
 			this.Ok = new System.Windows.Forms.Button();
-			this.Close = new System.Windows.Forms.Button();
+			this.CloseButton = new System.Windows.Forms.Button();
 			this.Browse = new System.Windows.Forms.Button();
 			this.DirectoryPath = new System.Windows.Forms.TextBox();
 			this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
@@ -58,16 +58,16 @@
 			this.Ok.UseVisualStyleBackColor = true;
 			this.Ok.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OkClick);
 			// 
-			// Close
+			// CloseButton
 			// 
-			this.Close.CausesValidation = false;
-			this.Close.Location = new System.Drawing.Point(143, 101);
-			this.Close.Name = "Close";
-			this.Close.Size = new System.Drawing.Size(75, 23);
-			this.Close.TabIndex = 2;
-			this.Close.Text = "Close";
-			this.Close.UseVisualStyleBackColor = true;
-			this.Close.MouseClick += new System.Windows.Forms.MouseEventHandler(this.CloseClick);
+			this.CloseButton.CausesValidation = false;
+			this.CloseButton.Location = new System.Drawing.Point(143, 101);
+			this.CloseButton.Name = "CloseButton";
+			this.CloseButton.Size = new System.Drawing.Size(75, 23);
+			this.CloseButton.TabIndex = 2;
+			this.CloseButton.Text = "Close";
+			this.CloseButton.UseVisualStyleBackColor = true;
+			this.CloseButton.MouseClick += new System.Windows.Forms.MouseEventHandler(this.CloseClick);
 			// 
 			// Browse
 			// 
@@ -114,7 +114,7 @@
 			this.Controls.Add(this.IncludeSubDirectories);
 			this.Controls.Add(this.DirectoryPath);
 			this.Controls.Add(this.Browse);
-			this.Controls.Add(this.Close);
+			this.Controls.Add(this.CloseButton);
 			this.Controls.Add(this.Ok);
 			this.Controls.Add(this.AddFilesLabel);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -135,7 +135,7 @@
 
         private System.Windows.Forms.Label AddFilesLabel;
         private System.Windows.Forms.Button Ok;
-        private System.Windows.Forms.Button Close;
+        private System.Windows.Forms.Button CloseButton;
         private System.Windows.Forms.Button Browse;
         private System.Windows.Forms.TextBox DirectoryPath;
         private System.Windows.Forms.ErrorProvider errorProvider;
