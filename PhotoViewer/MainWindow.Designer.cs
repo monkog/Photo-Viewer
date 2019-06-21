@@ -223,7 +223,7 @@
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(300, 300);
 			this.Name = "MainWindow";
-			this.Text = "Image viewer";
+			this.Text = "Photo viewer";
 			this.Splitter.Panel1.ResumeLayout(false);
 			this.Splitter.Panel1.PerformLayout();
 			this.Splitter.Panel2.ResumeLayout(false);
