@@ -23,10 +23,13 @@ namespace PhotoViewer
 
 		private void BrowseClick(object sender, MouseEventArgs e)
 		{
-			var directoryPicker = new DirectoryPicker { Owner = this };
+			var directoryPicker = new DirectoryPicker();
 			var result = directoryPicker.ShowDialog();
 			if (result == DialogResult.Cancel) return;
 
+			var items = CreateDirectoryContentItems(directoryPicker.Directories).ToList();
+			CreateListItems(items);
+			CreateTreeItems(items);
 			SelectedPathIndex = PathList.IndexOf(PathList.LastOrDefault(p => p.FileCount > 0));
 			InitializeImageViewer();
 		}
@@ -114,6 +117,121 @@ namespace PhotoViewer
 
 			ButtonLeft.Enabled = PathList[SelectedPathIndex].CurrentIndex != 1;
 			ButtonRight.Enabled = PathList[SelectedPathIndex].CurrentIndex != PathList[SelectedPathIndex].FileCount;
+		}
+
+		private IEnumerable<DirectoryContent> CreateDirectoryContentItems(Dictionary<string, DirectoryInfo> directories)
+		{
+			var createdItems = new List<DirectoryContent>();
+			foreach (var folder in directories)
+			{
+				if (PathList.Any(p => p.Path == folder.Key)) continue;
+				try
+				{
+					var item = new DirectoryContent(folder.Value.GetFiles().Length, 1, folder.Key);
+					createdItems.Add(item);
+					PathList.Add(item);
+				}
+				catch (UnauthorizedAccessException) { /* ignored */ }
+			}
+
+			return createdItems;
+		}
+
+		private void CreateListItems(IEnumerable<DirectoryContent> items)
+		{
+			foreach (var item in items)
+			{
+				var listViewItem = new ListViewItem(new[] { item.DirectoryName, item.FileCount.ToString() })
+				{
+					ImageIndex = 0,
+					StateImageIndex = 0
+				};
+
+				HistoryList.Items.Add(listViewItem);
+			}
+		}
+
+		private void CreateTreeItems(IEnumerable<DirectoryContent> items)
+		{
+			foreach (var directoryContent in items)
+			{
+				var paths = directoryContent.Path.Split('\\');
+				var rootExists = false;
+
+				foreach (TreeNode node in TreeView.Nodes)
+				{
+					if (node.Text != paths[0]) continue;
+					rootExists = true;
+					break;
+				}
+
+				if (!rootExists) TreeView.Nodes.Add(paths[0]);
+
+				var parentNode = FindParentNode(directoryContent.Path);
+				CreateTreeNode(directoryContent.Path, parentNode);
+			}
+
+			TreeView.ExpandAll();
+		}
+
+		private static void CreateTreeNode(string rootFolder, TreeNode parentNode)
+		{
+			var parentFolders = rootFolder.Split('\\').ToList();
+			parentFolders = parentFolders.Skip(parentFolders.IndexOf(parentFolders.Single(f => f == parentNode.Text)) + 1).ToList();
+
+			foreach (var folder in parentFolders)
+			{
+				var isTargetNode = folder == parentFolders.Last();
+				if (isTargetNode)
+				{
+					var exists = false;
+					TreeNode foundNode = null;
+					foreach (TreeNode node in parentNode.Nodes)
+					{
+						if (node.Text != folder) continue;
+						exists = true;
+						foundNode = node;
+					}
+
+					if (exists)
+					{
+						foundNode.ImageIndex = 1;
+						foundNode.SelectedImageIndex = 1;
+						continue;
+					}
+				}
+
+				var newNode = parentNode.Nodes.Add(folder);
+				newNode.ImageIndex = isTargetNode ? 1 : 0;
+				newNode.SelectedImageIndex = isTargetNode ? 1 : 0;
+				parentNode = newNode;
+			}
+		}
+
+		private TreeNode FindParentNode(string folder)
+		{
+			var folders = folder.Split('\\');
+			var parentPathFolders = folders.Take(folders.Length - 1);
+			TreeNode parentNode = null;
+
+			foreach (TreeNode node in TreeView.Nodes)
+			{
+				if (node.Text != folders[0]) continue;
+				parentNode = node;
+				break;
+			}
+
+			foreach (var parent in parentPathFolders)
+			{
+				foreach (TreeNode node in parentNode.Nodes)
+				{
+					if (node.Text != parent) continue;
+					parentNode = node;
+					break;
+				}
+			}
+
+			return parentNode;
 		}
 	}
 }
