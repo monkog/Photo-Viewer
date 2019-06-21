@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -12,6 +11,10 @@ namespace PhotoViewer
 		private bool _mouseDown;
 
 		private Point _mousePos;
+
+		private Size _initialSize;
+
+		private double _zoomFactor;
 
 		public FullscreenPicture(int width, int height, Action closeParent, string filePath) : this(width, height, closeParent)
 		{
@@ -61,70 +64,25 @@ namespace PhotoViewer
 
 		private void MouseWheelChanged(object sender, MouseEventArgs e)
 		{
-			var size = DisplayedImage.Size;
-			if (e.Delta > 0 && DisplayedImage.Size.Width < (double)Size.Width * 5)
-			{
-				DisplayedImage.Size = new Size((int)(size.Width * 1.1), (int)(size.Height * 1.1));
+			var screenBounds = Screen.PrimaryScreen.Bounds;
+			var newZoomFactor = e.Delta > 0 ? _zoomFactor + 0.1 : _zoomFactor - 0.1;
+			var recalculatedSize = new Size((int)(_initialSize.Width * newZoomFactor), (int)(_initialSize.Height * newZoomFactor));
 
-				if (DisplayedImage.Width > Screen.PrimaryScreen.Bounds.Width)
-				{
-					if (DisplayedImage.Size.Height > Screen.PrimaryScreen.Bounds.Height)
-					{
-						Size = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
-						Location = new Point(0, 0);
-						DisplayedImage.Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
-					}
-					else
-					{
-						Size = new Size(Screen.PrimaryScreen.Bounds.Width, DisplayedImage.Size.Height);
-						Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
-						DisplayedImage.Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, 0);
-					}
-				}
-				else if (DisplayedImage.Height > Screen.PrimaryScreen.Bounds.Height)
-				{
-					Size = new Size(DisplayedImage.Size.Width, Screen.PrimaryScreen.Bounds.Height);
-					Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, 0);
-					DisplayedImage.Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
-				}
-				else
-				{
-					Size = DisplayedImage.Size;
-					Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
-					DisplayedImage.Location = new Point(0, 0);
-				}
-			}
-			else if (e.Delta < 0 && DisplayedImage.Size.Width > Size.Width * 0.2)
-			{
-				DisplayedImage.Size = new Size((int)(size.Width * 0.9), (int)(size.Height * 0.9));
-				if (DisplayedImage.Width > Screen.PrimaryScreen.Bounds.Width)
-				{
-					if (DisplayedImage.Size.Height > Screen.PrimaryScreen.Bounds.Height)
-					{
-						Size = new Size(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
-						Location = new Point(0, 0);
-						DisplayedImage.Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
-					}
-					else
-					{
-						Size = new Size(Screen.PrimaryScreen.Bounds.Width, DisplayedImage.Size.Height);
-						Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
-						DisplayedImage.Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, 0);
-					}
-				}
-				else if (DisplayedImage.Height > Screen.PrimaryScreen.Bounds.Height)
-				{
-					Size = new Size(DisplayedImage.Size.Width, Screen.PrimaryScreen.Bounds.Height);
-					Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, 0);
-					DisplayedImage.Location = new Point(0, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
-				}
-				else
-				{
-					Size = DisplayedImage.Size;
-					Location = new Point((Screen.PrimaryScreen.Bounds.Width - DisplayedImage.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - DisplayedImage.Height) / 2);
-					DisplayedImage.Location = new Point(0, 0);
-				}
-			}
+			if (newZoomFactor > 5.0 || (recalculatedSize.Width < screenBounds.Width * 0.2 && newZoomFactor < 1.0)) return;
+			DisplayedImage.Size = recalculatedSize;
+			_zoomFactor = newZoomFactor;
+
+			var width = Math.Min(DisplayedImage.Width, screenBounds.Width);
+			var height = Math.Min(DisplayedImage.Height, screenBounds.Height);
+			Size = new Size(width, height);
+
+			var x = Math.Max(0, (screenBounds.Width - DisplayedImage.Width) / 2);
+			var y = Math.Max(0, (screenBounds.Height - DisplayedImage.Height) / 2);
+			Location = new Point(x, y);
+
+			var imageX = Math.Min(0, (screenBounds.Width - DisplayedImage.Width) / 2);
+			var imageY = Math.Min(0, (screenBounds.Height - DisplayedImage.Height) / 2);
+			DisplayedImage.Location = new Point(imageX, imageY);
 		}
 
 		private void MouseMoveOccured(object sender, MouseEventArgs e)
@@ -155,6 +113,8 @@ namespace PhotoViewer
 			var width = Math.Min(DisplayedImage.Width, screenBounds.Width);
 			var height = Math.Min(DisplayedImage.Height, screenBounds.Height);
 			Size = new Size(width, height);
+			_initialSize = Size;
+			_zoomFactor = 1.0;
 
 			var x = DisplayedImage.Width > screenBounds.Width ? 0 : (screenBounds.Width - DisplayedImage.Width) / 2;
 			var y = DisplayedImage.Height > screenBounds.Height ? 0 : (screenBounds.Height - DisplayedImage.Height) / 2;
